@@ -24,8 +24,8 @@ import minicalcul.programme.tableur.Tableur;
 
 /**
  * Barre de menu que l'on définiera sur la fenêtre
- * @author Clément Zeghmati
- * @version 0.1
+ * @author Affre Thomas
+ * @version 10.0
  */
 @SuppressWarnings("serial")
 public class BarreDeMenu extends JMenuBar implements ActionListener {
