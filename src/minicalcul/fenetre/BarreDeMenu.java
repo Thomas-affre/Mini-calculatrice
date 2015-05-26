@@ -95,9 +95,34 @@ public class BarreDeMenu extends JMenuBar implements ActionListener {
             + " - Affecter des valeurs aux zones mémoires :\n"
             + "\t-3 + 4 = A\n"
             + "\t2 * A\n"
-            + "\tA + A = B";
+            + "\tA + A = B\n";
             
-
+    /** Aide du mode tableur */
+    private static final String AIDE_TABLEUR = 
+            "--------------- FONCTIONALITES TABLEUR --------------- \n"
+            + " - Utiliser des réels : \n"
+            + "\t57    6.4    -4    -0.500    567.0\n\n"
+            + " - Utiliser des opérateurs :\n"
+            + "\t+    -    *    /\n\n"
+            + " - Effectuer des calculs avec une affectation :\n"
+            + "\t3 + 5.2 = A1\n"
+            + "\t7 * -2 = B16\n"
+            + "\t3 + ( 70 * 10 ) = A5\n"
+            + "\t( 50 + ( 2 * 14 ) ) = X18\n\n"
+            + " - Affecter des formules aux cellules :\n"
+            + "\tA1 * 2 = A2\n\n"
+            + " - Affecter des formules en utilisant le blocage ($) :\n"
+            + "\t$A$1 * 2 = C10\n";    
+    
+    /** Aide sur les différents modes de la mini-calculatrice */
+    private static final String AIDE_MODES_TABLEUR =
+            "--------------- MODES DE LA CALCULATRICE --------------- \n"
+            + "\tPour accéder au mode \"Gestionnaire de la mémoire\", utilisez "
+            + "la commande MEM. Pour revenir au mode \"Calculatrice\", "
+            + "utilisez QUIT.\n"
+            + "\tPour accéder au mode \"Tableur\", utilisez la commande TAB. "
+            + "Pour revenir au mode \"Calculatrice\", utilisez QUIT.\n";
+    
     /**
      * Construction de la barre de menu
      * @param laFenetre Référence à la fenêtre à laquelle la barre est attachée
@@ -348,8 +373,13 @@ public class BarreDeMenu extends JMenuBar implements ActionListener {
             
         } else if (source == this.quitter) {
             this.laFenetre.fermetureApplication();
+            
         } else if (source == this.aideCalcul) {
             this.laFenetre.ajoutLigneConsole(AIDE_CALCUL);
+        } else if (source == this.aideTableur) {
+            this.laFenetre.ajoutLigneConsole(AIDE_TABLEUR);
+        } else if (source == this.aideModes) {
+            this.laFenetre.ajoutLigneConsole(AIDE_MODES_TABLEUR);
         }
     }
 }
