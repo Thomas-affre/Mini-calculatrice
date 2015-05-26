@@ -80,15 +80,22 @@ public class BarreDeMenu extends JMenuBar implements ActionListener {
     private static final String AIDE_CALCUL = 
             "--------------- FONCTIONALITES CALCULATRICE --------------- \n"
             + " - Utiliser des réels : \n"
-            + "\t57    6.4    -4    -0.500    567.0\n"
+            + "\t57    6.4    -4    -0.500    567.0\n\n"
             + " - Utiliser des opérateurs :\n"
-            + "\t+    -    *    /"
+            + "\t+    -    *    /\n\n"
             + " - Effectuer des calculs simples :\n"
-            + "\t3 + 5.2 | 7 * -2 | 25 / 4 | -5.98 * 9 - 46\n"
+            + "\t3 + 5.2\n"
+            + "\t7 * -2\n"
+            + "\t25 / 4\n"
+            + "\t-5.98 * 9 - 46\n\n"
             + " - Effectuer des calculs avec des parenthèses :\n"
-            + "\t3 + ( 70 * 10 ) | ( 25 / 2 ) - 2 | ( 50 + ( 2 * 14 ) )\n"
+            + "\t3 + ( 70 * 10 )\n"
+            + "\t( 25 / 2 ) - 2\n"
+            + "\t( 50 + ( 2 * 14 ) )\n\n"
             + " - Affecter des valeurs aux zones mémoires :\n"
-            + "\t-3 + 4 = A | 2 * A | A + A = B";
+            + "\t-3 + 4 = A\n"
+            + "\t2 * A\n"
+            + "\tA + A = B";
             
 
     /**
@@ -341,6 +348,8 @@ public class BarreDeMenu extends JMenuBar implements ActionListener {
             
         } else if (source == this.quitter) {
             this.laFenetre.fermetureApplication();
+        } else if (source == this.aideCalcul) {
+            this.laFenetre.ajoutLigneConsole(AIDE_CALCUL);
         }
     }
 }
