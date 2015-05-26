@@ -53,7 +53,7 @@ public abstract class Console {
     
     /**
      * Regex représentant les coordonnées d'une cellule avec blocage au niveau
-     * de la colone (lettre). Le dollars se trouve en première position dans la
+     * de la colone (lettre). Le dollar se trouve en première position dans la
      * chaine.
      */
     public static final String REGEX_CELLULE_BLOCAGE_COLONE = 
@@ -61,7 +61,7 @@ public abstract class Console {
     
     /** 
      * Regex représentant les coordonnées d'une cellule avec blocage au niveau
-     * de la ligne (chiffre). Le dollars se trouve entre la lettre et le nombre.
+     * de la ligne (chiffre). Le dollar se trouve entre la lettre et le nombre.
      */
     public static final String REGEX_CELLULE_BLOCAGE_LIGNE = 
             "[$]{0,1}[A-Z]{1}[$]{1}(([1-9])|(1[0-9]{1})|20)";
@@ -74,7 +74,7 @@ public abstract class Console {
     public static final int ERREUR_SYNTAXE = 1;
     
     /**
-     * Erreur déclenchée si le nombre de parenthèses ouvrantes et fermante est
+     * Erreur déclenchée si le nombre de parenthèses ouvrantes et fermantes est
      * différent lors d'un calcul
      */
     public static final int ERREUR_EQUIVALENCE_PARENTHESES = 2;
@@ -224,7 +224,7 @@ public abstract class Console {
     }
 
     /**
-     * Acceseur à laFenetre
+     * Accesseur à laFenetre
      * @return laFenetre 
      */
     public FenetrePrincipale getLaFenetre() {
@@ -240,7 +240,7 @@ public abstract class Console {
     }
 
     /**
-     * Acceseur à ARRONDIR
+     * Accesseur à ARRONDIR
      * @return ARRONDIR 
      */
     public DecimalFormat getARRONDIR() {

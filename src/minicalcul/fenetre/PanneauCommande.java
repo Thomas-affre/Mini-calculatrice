@@ -50,7 +50,7 @@ public class PanneauCommande extends JPanel {
     /** Label du mode */
     private JLabel mode;
     
-    /** Label de la flêche indiquant l'invite de commandes */ 
+    /** Label de la flèche indiquant l'invite de commandes */ 
     private JLabel fleche;
     
     /** Label du mode sur lequel on se situe */
@@ -70,7 +70,7 @@ public class PanneauCommande extends JPanel {
 
     /**
      * Constructeur du panneau d'interpréteur de commandes
-     * @param laFenetre Fenetre à laquelle le panneau est appliqué
+     * @param laFenetre Fenêtre à laquelle le panneau est appliqué
      */
     public PanneauCommande(FenetrePrincipale laFenetre) {
         this.laFenetre = laFenetre;
@@ -89,7 +89,7 @@ public class PanneauCommande extends JPanel {
         this.mode.setFont(new Font("Arial", 0, 16));    // Police
         this.add(this.mode);
         
-        // Fleche
+        // Flèche
         this.add(this.getFleche());
         
         // Type du mode
@@ -106,26 +106,26 @@ public class PanneauCommande extends JPanel {
     }
 
     /**
-     * Applelée lorsque l'utilisateur clique sur le bouton valider ou appuie
+     * Appelée lorsque l'utilisateur clique sur le bouton valider ou appuie
      * sur la touche ENTRER
      */
     public void commandeValidee() {
         
         // On contrôle d'abord si le champs n'est pas vide
         if (this.ligneDeCommande.getText().equals("")) {
-            // On montre à l'utilisateur que son actiona été prise en compte
+            // On montre à l'utilisateur que son action a été prise en compte
             this.laFenetre.ajoutLigneConsole("> "); 
             return; // Inutile de continuer
         }
         
-        // La commande ne peut excéder 75 caractère. Si c'est le cas on stoppe
+        // La commande ne peut excéder 75 caractères. Si c'est le cas on stoppe
         if (this.ligneDeCommande.getText().length() > 75) {
             this.laFenetre.ajoutLigneConsole(this.ligneDeCommande.getText()
                     + ERREUR_LONGUEUR_CHAINE);
             return; // Inutile de continuer
         }
 
-        // On ajoute la commande à la sauvegarde et on met le cureseur à la fin
+        // On ajoute la commande à la sauvegarde et on met le curseur à la fin
         this.sauvegardeCommandes.add(this.ligneDeCommande.getText());
         this.positionSauvegarde = this.sauvegardeCommandes.size();
         
@@ -134,7 +134,7 @@ public class PanneauCommande extends JPanel {
             // Mode calculatrice
             this.traitementCalculatrice();
         } else if (this.modeActuel.getText() == MODES[1]) {
-            // Mode gestion de la memoire
+            // Mode gestion de la mémoire
             this.traitementGestionMemoire();
         } else if (this.modeActuel.getText() == MODES[2]) {
             // Mode tableur
@@ -145,7 +145,7 @@ public class PanneauCommande extends JPanel {
     }
 
     /**
-     * Appelée lorsqu'une commande est validée et qu'on est dans le mode
+     * Appelée lorsqu'une commande est validée et que l'on est dans le mode
      * calculatrice
      */
     private void traitementCalculatrice() {
@@ -272,7 +272,7 @@ public class PanneauCommande extends JPanel {
 
     /**
      * Redescend dans la liste des sauvegardes et les affiches sur la ligne de
-     * commande. S'arrète à la fin.
+     * commande. S'arrête à la fin.
      */
     private void affichageSauvegardeApres() {
         // On le fait seulement si on n'est pas à la fin de la liste
@@ -309,10 +309,10 @@ public class PanneauCommande extends JPanel {
     }
     
     /**
-     * Acceseur à fleche
+     * Accesseur à fleche
      * @return fleche 
      */
-    public JLabel getFleche() {
+    private JLabel getFleche() {
         
         if (this.fleche == null) {
             this.fleche = new JLabel(">");                // Constructeur
@@ -324,7 +324,7 @@ public class PanneauCommande extends JPanel {
     
 
     /**
-     * Acceseur à ligneDeCommande
+     * Accesseur à ligneDeCommande
      * @return ligneDeCommande 
      */
     public JTextField getLigneDeCommande() {
@@ -348,9 +348,9 @@ public class PanneauCommande extends JPanel {
                     if (e.getKeyCode() == KeyEvent.VK_ENTER) { 
                         commandeValidee();              // Touche ENTREE
                     } else if (e.getKeyCode() == KeyEvent.VK_UP) {
-                        affichageSauvegardeAvant();     // Flêche haut
+                        affichageSauvegardeAvant();     // Flèche haut
                     } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                        affichageSauvegardeApres();     // Flêche bas
+                        affichageSauvegardeApres();     // Flèche bas
                     }
 
                     /*
@@ -376,7 +376,7 @@ public class PanneauCommande extends JPanel {
     }
 
     /**
-     * Acceseur à validerCommande
+     * Accesseur à validerCommande
      * @return validerCommande 
      */
     private JButton getValiderCommande() {

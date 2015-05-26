@@ -48,14 +48,14 @@ public class ConsoleCalculSimple extends Console implements ConsoleCalcul {
             + "format : il ne peut y avoir des parenthèses après une "
             + "affectation.";
 
-    /** Message affiché lorsqu'il y a une opération apeès une affectation */
+    /** Message affiché lorsqu'il y a une opération après une affectation */
     protected static final String MSG_OPERATION_APRES_EGAL = "Erreur de "
             + "format : il ne doit pas y avoir d'opérations après une "
             + "affectation.";
 
     /** Liste des éléments disponible (en chaine) utilisé pour les messages */
     protected static final String[] ELEMENTS_EN_CHAINE =
-        {"un réel", "un opérteur", "une parenthèse ouvrante",
+        {"un réel", "un opérateur", "une parenthèse ouvrante",
         "une parenthèse fermante", "un égal", "une mémoire"};
 
     /**

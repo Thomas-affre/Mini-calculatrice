@@ -66,7 +66,7 @@ public class ConsoleGestionMemoire extends Console {
             + "syntaxe : cet argument n'est pas une zone mémoire ou une plage "
             + "de zones mémoire.";
     
-    /** Message affiché lorsqu'une plage mémoire n'est pas rengée */
+    /** Message affiché lorsqu'une plage mémoire n'est pas rangée */
     protected static final String MSG_PLAGE_MEMOIRE_NON_ORDONNEE = "Erreur "
             + "de syntaxe : les bornes de la plage mémoire "
             + "doivent être rangées dans l'ordre.";
@@ -285,7 +285,7 @@ public class ConsoleGestionMemoire extends Console {
                     String resultat = Double.toString(Double.parseDouble(
                             this.contenuZoneMemoire(i)) + 1);
                     
-                    // Comme c'est un double, on regarde si on peut enlevé la ,
+                    // Comme c'est un double, on regarde si on peut enlevé la','
                     this.getLaFenetre().getLaMemoire().affectationMemoire(i,
                            (estUnEntier(resultat) ? Integer.toString(
                               (int) Double.parseDouble(resultat)) : resultat));
@@ -338,7 +338,7 @@ public class ConsoleGestionMemoire extends Console {
             return;     // Inutile de continuer
         }
         
-        double produit = 1; // Produit a retourner
+        double produit = 1; // Produit à retourner
         boolean initialise = false; // = true si une zone est intialisée
         
         // On fait le produit si l'argument de PROD est bon ou inexistant
@@ -354,7 +354,7 @@ public class ConsoleGestionMemoire extends Console {
         }
 
         if (initialise) {
-            // Comme c'est un double, on regarde si on peut enlevé la ,
+            // Comme c'est un double, on regarde si on peut enlevé la ','
             this.aRetourner = "= " + (estUnEntier(Double.toString(produit)) 
                     ? Integer.toString((int) Double.parseDouble(
                             Double.toString(produit))) 
@@ -391,7 +391,7 @@ public class ConsoleGestionMemoire extends Console {
 
         if (nbNombre != 0) {
             moyenne /= nbNombre;
-            // Comme c'est un double, on regarde si on peut enlevé la ,
+            // Comme c'est un double, on regarde si on peut enlevé la ','
             this.aRetourner = "= " + (estUnEntier(Double.toString(moyenne)) 
                     ? Integer.toString((int) Double.parseDouble(
                             Double.toString(moyenne))) 
@@ -629,7 +629,7 @@ public class ConsoleGestionMemoire extends Console {
     }
 
     /**
-     * Eleve le contenu des zones mémoires spécifiées en premier argument à la
+     * Elève le contenu des zones mémoires spécifiées en premier argument à la
      * puissance spécifiée en second argument. 
      */
     private void exposant() {
@@ -827,7 +827,7 @@ public class ConsoleGestionMemoire extends Console {
     }
     
     /**
-     * @return Chaine de caractères représenatnt le nombre d'arguments
+     * @return Chaine de caractères représentant le nombre d'arguments
      *          attendus pour la commande saisie par l'utilisateur
      */
     protected String nbArgumentsCommande() {
@@ -853,7 +853,7 @@ public class ConsoleGestionMemoire extends Console {
     }
 
     /**
-     * Controle si une chaine de 4 caractères est une plage mémoire avec des
+     * Contrôle si une chaine de 4 caractères est une plage mémoire avec des
      * bornes dans le bon ordre
      * @param aTester Chaine à tester
      * @return 0 si la chaine est bien une plage mémoire

@@ -26,7 +26,7 @@ public class Commandes {
     /** Objet du tableur */
     private ConsoleCalculTableur tableur;
     
-    /** Objet exécutant les commandes du tableurs */
+    /** Objet exécutant les commandes du tableur */
     private ConsoleGestionTableur gestionTableur;
     
     /** Tableau des cellules (partie programme) */
@@ -66,7 +66,7 @@ public class Commandes {
     }
     
     /**
-     * Acceseur à calculs
+     * Accesseur à calculs
      * @return calculs 
      */
     public ConsoleCalculSimple getCalculs() {
@@ -74,7 +74,7 @@ public class Commandes {
     }
 
     /**
-     * Acceseur à memoires
+     * Accesseur à memoires
      * @return memoires 
      */
     public ConsoleGestionMemoire getMemoires() {
@@ -82,7 +82,7 @@ public class Commandes {
     }
 
     /**
-     * Acceseur à tableur
+     * Accesseur à tableur
      * @return tableur 
      */
     public ConsoleCalculTableur getTableur() {
@@ -90,7 +90,7 @@ public class Commandes {
     }
 
     /**
-     * Acceseur à gestionTableur
+     * Accesseur à gestionTableur
      * @return gestionTableur 
      */
     public ConsoleGestionTableur getGestionTableur() {
@@ -98,7 +98,7 @@ public class Commandes {
     }
 
     /**
-     * Acceseur à tableauCellules
+     * Accesseur à tableauCellules
      * @return tableauCellules 
      */
     public Tableur getTableauCellules() {
