@@ -57,7 +57,7 @@ public class FenetrePrincipale extends JFrame {
     public FenetrePrincipale() {
         
         // Propriétés de la fenêtre
-        this.setTitle("Mini-Calcultrice");      // Titre
+        this.setTitle("Mini-Calculatrice");      // Titre
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.setIconImage(new ImageIcon("icone.png").getImage()); // Logo
         this.setSize(1024, 768);                // Taille
