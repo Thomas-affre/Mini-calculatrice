@@ -1,6 +1,6 @@
 /* 
  * Cellule.java                            17 avr. 2015
- * IUT info1 Groupe 3 2014-2015
+ * IUT INFO1 Projet S2 2014-2015
  */
 package minicalcul.programme.tableur;
 
@@ -82,6 +82,7 @@ public class Cellule {
      * @return contenu 
      */
     public String getContenu() {
+        
         return contenu;
     }
 
@@ -122,7 +123,7 @@ public class Cellule {
      * @return contenu brut de la cellule
      */
     public String getValeur() {
-        return this.sonTableur.restaurationCellule(this.coordonnees);
+        return this.sonTableur.restaurationValeurCellule(this.coordonnees);
     }
     
     /* (non-Javadoc)
@@ -131,13 +132,14 @@ public class Cellule {
     @Override
     public String toString() {
         /*
-         * S'il y a une formule, on enlève les deux dernières sous-chaines
-         * correspondantes au "=" et aux coordonnées de la cellule
+         * S'il y a une formule, à la fin du contenu il y a un = suivi du 
+         * nom de la cellule. On l'enlève donc.
          */
-        String laFormule = this.contenu;
-        
+        String laFormule = null;
         if (this.formule) {
-            laFormule = laFormule.substring(0, this.contenu.length() - 5);
+            int i;
+            for (i = 0; contenu.charAt(i) != '='; i++);
+            laFormule = this.contenu.substring(0,i);
         }
         
         return "Cellule " + this.coordonnees + " :"
@@ -145,5 +147,4 @@ public class Cellule {
                         : this.getValeur())
                 + "\n\t- formule : " + (this.formule ? laFormule : "/");
     }
-    
 }

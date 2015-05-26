@@ -1,6 +1,6 @@
 /* 
  * Commandes.java                            12 avr. 2015
- * IUT info1 Groupe 3 2014-2015
+ * IUT INFO1 Projet S2 2014-2015
  */
 package minicalcul.programme.commandes;
 
@@ -8,7 +8,7 @@ import minicalcul.fenetre.FenetrePrincipale;
 import minicalcul.programme.tableur.Tableur;
 
 /**
- * Commandes de la console
+ * Objet réunissant toutes les consoles de l'application
  * @author Clément Zeghmati
  * @version 0.1
  */
@@ -112,5 +112,4 @@ public class Commandes {
     public void setTableauCellules(Tableur tableauCellules) {
         this.tableauCellules = tableauCellules;
     }
-    
 }

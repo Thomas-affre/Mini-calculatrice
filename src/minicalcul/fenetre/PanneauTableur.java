@@ -1,6 +1,6 @@
 /* 
- * PanneauTableur.java                            9 avr. 2015
- * IUT info1 Groupe 3 2014-2015
+ * PanneauTableur.java                            14 avr. 2015
+ * IUT INFO1 Projet S2 2014-2015
  */
 package minicalcul.fenetre;
 
@@ -14,9 +14,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 /**
- * Panneau du tableur
+ * Panneau de l'onglet du tableur
+ * @author Thomas Affre
+ * @author Thibaut Méjane
+ * @author Florian Louargant
  * @author Clément Zeghmati
- * @version 0.1
+ * @version 1.1
  */
 @SuppressWarnings("serial")
 public class PanneauTableur extends JPanel {
@@ -57,12 +60,13 @@ public class PanneauTableur extends JPanel {
     }
 
     /**
-     * Créé la première colone du tableur
+     * Créé la première colone du tableur contenant les chiffres de 1 à 20
      */
     private void creationPremiereColone() {
 
+        // Construction du panneau disposé dans une grille
         this.premiereColone = new JPanel(new GridLayout(20,1));
-        this.premiereColone.setBounds(20, 34, 35, 491);
+        this.premiereColone.setBounds(20, 34, 35, 491); // Taille et position
         
         for (int i = 0; i < this.lignes.length - 1; i++) {
             this.lignes[i] = new JLabel(Integer.toString(i + 1), JLabel.CENTER);
@@ -70,7 +74,6 @@ public class PanneauTableur extends JPanel {
                     BorderFactory.createLineBorder(Color.GRAY));
             this.premiereColone.add(this.lignes[i]);
         }
-        this.premiereColone.setOpaque(true);
 
         this.add(this.premiereColone);
     }
@@ -87,11 +90,13 @@ public class PanneauTableur extends JPanel {
         this.tableau = new JPanel(new GridLayout(21,26));
         this.tableau.setPreferredSize(new Dimension(2200,0));
 
+        // On place le tableur dans un scroll
         this.scrollPane = new JScrollPane(this.tableau);
         this.scrollPane.setBounds(55, 10, 370, 530);      // Taille
         
         char tmp = 65; // A = 65 .. Z = 90
 
+        // Première ligne contenant toutes les lettres de l'alphabet
         for (int i = 0; i < this.colones.length; i++) {
             Character nom = new Character(tmp);
             this.colones[i] = new JLabel(nom.toString(), JLabel.CENTER);

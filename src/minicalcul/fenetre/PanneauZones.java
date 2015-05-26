@@ -1,6 +1,6 @@
 /* 
- * PanneauCalcul.java                            9 avr. 2015
- * IUT info1 Groupe 3 2014-2015
+ * PanneauZones.java                            14 avr. 2015
+ * IUT INFO1 Projet S2 2014-2015
  */
 package minicalcul.fenetre;
 
@@ -16,8 +16,11 @@ import javax.swing.JTextField;
 
 /**
  * Panneau des zones mémoires
+ * @author Thomas Affre
+ * @author Thibaut Méjane
+ * @author Florian Louargant
  * @author Clément Zeghmati
- * @version 0.1
+ * @version 1.1
  */
 @SuppressWarnings("serial")
 public class PanneauZones extends JPanel {
@@ -42,16 +45,14 @@ public class PanneauZones extends JPanel {
                         
         // Création des zones mémoires
         this.creationZonesMemoire();
-               
     }
 
     /**
      * Constuit le tableau des zones mémoires
      */
     private void creationZonesMemoire() {
+        // Construction du tableau dans une grille
         this.zonesMemoire = new JPanel(new GridLayout(13, 2, 5, 0));
-
-        
         this.zonesMemoire.setBounds(5, 5, 420, 540);    // Position et taille
         
         // Création des tableaux
@@ -60,14 +61,13 @@ public class PanneauZones extends JPanel {
         this.contenuZones = new JTextField[26];
         
         // Initialisation et ajout
-        char tmp = 65;  // A = 65 .. Z = 90
         for (int i = 0; i < this.nomsZones.length; i++) {
             
             // Panel
             this.paireNomZone[i] = new JPanel(new BorderLayout());
             
-            // Nom de zone
-            Character nom = new Character(tmp);
+            // Nom de zone A=65..Z=90
+            Character nom = new Character((char) (i + 65));
             this.nomsZones[i] = new JLabel(" " + nom.toString() + " : ");
             this.nomsZones[i].setFont(new Font("Courier", 0, 18));              
             this.paireNomZone[i].add(this.nomsZones[i], BorderLayout.WEST);
@@ -82,11 +82,8 @@ public class PanneauZones extends JPanel {
                     BorderFactory.createLineBorder(Color.GRAY));
             this.paireNomZone[i].add(this.contenuZones[i], BorderLayout.CENTER); 
             
-            
             // AJout de la paire au panel
             this.zonesMemoire.add(this.paireNomZone[i]);
-            
-            tmp++; // Incrémentation des lettres
         }
         this.add(this.zonesMemoire);
     }
@@ -128,5 +125,4 @@ public class PanneauZones extends JPanel {
     public JTextField[] getContenuZones() {
         return contenuZones;
     }
-     
 }

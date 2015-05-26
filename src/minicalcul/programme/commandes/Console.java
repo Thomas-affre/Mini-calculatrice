@@ -1,26 +1,36 @@
 /* 
  * Console.java                            14 avr. 2015
- * IUT info1 Groupe 3 2014-2015
+ * IUT INFO1 Projet S2 2014-2015
  */
 package minicalcul.programme.commandes;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import minicalcul.fenetre.FenetrePrincipale;
 
 /**
- * Objet de base d'une console
+ * Objet permettant de matérialiser une console de traitements de commandes 
+ * contenant :
+ *      - des expressions régulières qui pourront être utilisées pour tester
+ *        des chaines contenues dans des calculs 
+ *      - des constantes d'erreurs prédéfinis
+ *      - les instances communes à toutes les consoles
+ * @author Thomas Affre
+ * @author Thibaut Méjane
+ * @author Florian Louargant
  * @author Clément Zeghmati
- * @version 0.1
+ * @version 1.1
  */
 public abstract class Console {
 
-    /** Regex d'un int */
+    /** Regex d'un entier relatif */
     public static final String REGEX_ENTIER =
             "(\\-{0,1})([0-9]*)(\\.[0]*){0,1}";
     
-    /** Regex d'un double */
+    /** Regex d'un réel */
     public static final String REGEX_DOUBLE = 
             "(\\-{0,1})([0-9]{1,13})(\\.[0-9]+)?";
 
@@ -41,81 +51,178 @@ public abstract class Console {
     public static final String REGEX_CELLULE_BLOCAGE = 
             "[$]{0,1}[A-Z]{1}[$]{0,1}(([1-9])|(1[0-9]{1})|20)";
     
-    /** Regex représentant une plage de cellules */
+    /**
+     * Regex représentant les coordonnées d'une cellule avec blocage au niveau
+     * de la colone (lettre). Le dollars se trouve en première position dans la
+     * chaine.
+     */
+    public static final String REGEX_CELLULE_BLOCAGE_COLONE = 
+            "[$]{1}[A-Z]{1}[$]{0,1}(([1-9])|(1[0-9]{1})|20)";
+    
+    /** 
+     * Regex représentant les coordonnées d'une cellule avec blocage au niveau
+     * de la ligne (chiffre). Le dollars se trouve entre la lettre et le nombre.
+     */
+    public static final String REGEX_CELLULE_BLOCAGE_LIGNE = 
+            "[$]{0,1}[A-Z]{1}[$]{1}(([1-9])|(1[0-9]{1})|20)";
+    
+    /** Regex représentant une plage de cellules sans blocage */
     public static final String REGEX_PLAGE_CELLULES = 
             REGEX_CELLULE +  "\\.\\." + REGEX_CELLULE;
-    
-    /** Constante d'erreur de syntaxe */
+        
+    /** Erreur déclenchée si un symbole est inconnu */
     public static final int ERREUR_SYNTAXE = 1;
     
-    /** Constante d'erreur de format */
-    public static final int ERREUR_FORMAT = 2;
+    /**
+     * Erreur déclenchée si le nombre de parenthèses ouvrantes et fermante est
+     * différent lors d'un calcul
+     */
+    public static final int ERREUR_EQUIVALENCE_PARENTHESES = 2;
     
-    /** Constante d'erreur si utilisation d'une variable non intialisée */
-    public static final int ERREUR_INTIALISATION = 3;
+    /** Erreur déclenchée si on trouve une parenthèse après une affectation */
+    public static final int ERREUR_PARENTHESES_APRES_EGAL = 3;
+
+    /** Erreur déclenchée si un élément d'un calcul à un mauvais successeur */
+    public static final int ERREUR_MAUVAIS_SUCCESSEUR = 4;
+
+    /** Erreur déclenchée si le premier élément d'un calcul est incorrect */
+    public static final int ERREUR_MAUVAIS_DEBUT = 5;
+
+    /** Erreur déclenchée si le dernier élément d'un calcul est incorrect */
+    public static final int ERREUR_MAUVAISE_FIN = 6;
+
+    /** Erreur déclenchée si on tente d'utiliser une variable non intialisée */
+    public static final int ERREUR_INTIALISATION = 7;
     
-    /** Constante d'erreur si le nombre d'arguments n'est pas celui attendu */
-    public static final int ERREUR_NB_ARGUMENTS = 4;
-    
-    /** Constante d'erreur de format de plage mémoire */
-    public static final int ERREUR_PLAGE_MEMOIRES = 5;
-    
-    /** Constante d'erreur d'ordre de plage mémoire */
-    public static final int ERREUR_ORDRE_PLAGE_MEMOIRES = 6;
-    
-    /** Constante d'erreur si un argument n'est pas une valeur */
-    public static final int ERREUR_VALEUR_ARGUMENT = 7;
-    
-    /** Constante d'erreur si une affectation est attendue */
+    /** Erreur déclenchée si une affectation est attendue mais est absent */
     public static final int ERREUR_AFFECTATION = 8;
     
-    /** Objet permettant de définir le format des décimaux */
-    private final DecimalFormat df = new DecimalFormat(); 
+    /** Erreur déclenchée s'il y a une opération après un égal */
+    public static final int ERREUR_OPERATION_APRES_EGAL = 9;
+
+    /** 
+     * Erreur déclenchée si le nombre d'arguments d'une commande du gestionnaire
+     * de mémoires ou du tableur n'est pas celui attendu
+     */
+    public static final int ERREUR_NB_ARGUMENT = 10;
     
-    /** Référence permettant d'accéder à la console et aux zones mémoire */
+    /** Erreur déclenchée si une plage mémoire est mauvaise */
+    public static final int ERREUR_PLAGE_MEMOIRE = 11;
+    
+    /** Erreur déclenchée si une plage de mémoire n'est pas ordonnée */
+    public static final int ERREUR_ORDRE_PLAGE_MEMOIRE = 12;
+    
+    /** Erreur déclenchée si un argument doit être un réel mais ne l'est pas */
+    public static final int ERREUR_VALEUR_ARGUMENT = 13;
+    
+    /** Erreur déclenchée s'il manque une valeur dans une commande */
+    public static final int ERREUR_VALEUR_ABSENTE = 14;
+    
+    /** Erreur déclenchée s'il y a un problème de dimension lors d'une copie */
+    public static final int ERREUR_DIMENSION_COPIE = 15;
+    
+    /** Erreur déclenchée si une mémoire est attendue dans une commande */
+    public static final int ERREUR_MEMOIRE_ABSENTE = 16;
+    
+    /** Erreur déclenchée si aucune affectation n'est attendue */
+    public static final int ERREUR_AFFECTATION_INNATENDUE = 17;
+    
+    /** Erreur déclenchée si on attend une ligne ou une colonne en plage */
+    public static final int ERREUR_PLAGE_LIGNE_OU_COLONNE = 18;
+        
+    /** Référence permettant d'accéder aux éléments de la console */
     private FenetrePrincipale laFenetre;
           
+    /** Objet permettant de définir l'arrondissement des réels */
+    private final DecimalFormat ARRONDIR = new DecimalFormat("0.00",
+            new DecimalFormatSymbols(Locale.US));
+
     /** Commande saisie par l'utilisateur */
-    private String commande;
+    protected String commande;
     
-    /** Passe à true si une erreur a été trouvée */
-    private boolean erreurTrouvee;
+    /** Passe à true si une erreur a été trouvée lors des contrôles */
+    protected boolean erreurTrouvee;
     
-    /** Saisie de l'utilisateur divisé dans un tableau à chaque espace */
-    private String[] instructions;
+    /** Saisie de l'utilisateur divisée dans un tableau à chaque sous-chaine */
+    protected String[] instructions;
     
     /** Message à retourner sur la console */
-    private String aRetourner;
+    protected String aRetourner;
     
     /** Indice de l'argument où il y a un problème */
-    private int lieuMauvaisArgument;
+    protected int lieuMauvaisArgument;
     
     /**
      * Traite la commande saisie par l'utilisateur
-     * @param commande Commande à traiter
+     * @param commande Commande saisie par l'utilisateur à traiter
      * @return résultat de la commande si elle est bonne, message d'erreur sinon
      */
     public abstract String traitementCommande(String commande);
     
     /**
-     * Réinitialise l'état de l'objet à chaque début d'instructions
+     * Réinitialise l'état d'instance de la console à chaque début d'instruction
      */
-    public abstract void reinitialisation();
+    protected abstract void reinitialisation();
     
     /**
-     * Recherche le lieu de l'erreur et affiche un message en fonction de cette
-     * erreur
-     * @param typeErreur Type d'erreur recherché
+     * Recherche le lieu de l'erreur et retourne un message en fonction de cette
+     * erreur qui sera affiché sur la console
+     * @param typeErreur Type d'erreur à rechercher
      */
-    public abstract void rechercheErreur(int typeErreur);
+    protected abstract void rechercheErreur(int typeErreur);
     
     /**
-     * Teste si une chaine de caractère est une zone mémoire ou une cellule
+     * Teste si une chaine de caractères correspond à une mémoire existante et 
+     * acceptée par la console
      * @param aTester Chaine à tester
-     * @return true s'il s'agit d'une zone mémoire ou d'une cellule, false sinon
+     * @return true s'il s'agit d'une mémoire acceptée par la console,
+     *         false sinon
      */
-    public abstract boolean estUneMemoire(String aTester); 
-                    
+    protected abstract boolean estUneMemoire(String aTester);
+    
+    /**
+     * Teste si une mémoire CORRECTE que l'on souhaite exploitée est initialisée
+     * @param aTester Chaine à tester qui doit être une mémoire
+     * @return true si la mémoire est initialisée, false sinon
+     */
+    protected abstract boolean estInitialisee(String aTester);
+                        
+    /**
+     * Vérifie si une chaine est un opérateur
+     * @param aTester Chaine à tester
+     * @return true si aTester est un opérateur, false sinon
+     */
+    public static boolean estUnOperateur(String aTester) {
+        return Pattern.compile(REGEX_OPERATEUR).matcher(aTester).matches();        
+    }
+    
+    /**
+     * Teste si une chaine de caractères REPRESENTANT UN REEL est positive
+     * @param aTester Chaine à tester qui doit être un réel
+     * @return true si c'est positif, false sinon
+     */
+    public static boolean estPositif(String aTester) {
+        return aTester.charAt(0) != '-';
+    }
+
+    /**
+     * Teste si une chaine de caractères est un entier
+     * @param aTester Chaine à tester
+     * @return true s'il s'agit d'un entier, false sinon
+     */
+    public static boolean estUnEntier(String aTester) {
+        return Pattern.compile(REGEX_ENTIER).matcher(aTester).matches();
+    }
+
+    /**
+     * Teste si une chaine de caractères est un réel
+     * @param aTester Chaine à tester
+     * @return true s'il s'agit d'un double, false sinon
+     */
+    public static boolean estUnDouble(String aTester) {
+        return Pattern.compile(REGEX_DOUBLE).matcher(aTester).matches();
+    }
+
     /**
      * Acceseur à laFenetre
      * @return laFenetre 
@@ -124,8 +231,6 @@ public abstract class Console {
         return laFenetre;
     }
     
-    
-
     /**
      * Mutateur de laFenetre
      * @param laFenetre nouveau laFenetre
@@ -135,129 +240,10 @@ public abstract class Console {
     }
 
     /**
-     * Acceseur à commande
-     * @return commande 
+     * Acceseur à ARRONDIR
+     * @return ARRONDIR 
      */
-    public String getCommande() {
-        return commande;
+    public DecimalFormat getARRONDIR() {
+        return ARRONDIR;
     }
-
-    /**
-     * Mutateur de commande
-     * @param commande nouveau commande
-     */
-    public void setCommande(String commande) {
-        this.commande = commande;
-    }
-    
-    /**
-     * Acceseur à erreurTrouvee
-     * @return erreurTrouvee 
-     */
-    public boolean isErreurTrouvee() {
-        return erreurTrouvee;
-    }
-
-    /**
-     * Mutateur de erreurTrouvee
-     * @param erreurTrouvee nouveau erreurTrouvee
-     */
-    public void setErreurTrouvee(boolean erreurTrouvee) {
-        this.erreurTrouvee = erreurTrouvee;
-    }
-
-    /**
-     * Acceseur à instructions
-     * @return instructions 
-     */
-    public String[] getInstructions() {
-        return instructions;
-    }
-
-    /**
-     * Mutateur de instructions
-     * @param instructions nouveau instructions
-     */
-    public void setInstructions(String[] instructions) {
-        this.instructions = instructions;
-    }
-
-    /**
-     * Acceseur à aRetourner
-     * @return aRetourner 
-     */
-    public String getaRetourner() {
-        return aRetourner;
-    }
-
-    /**
-     * Mutateur de aRetourner
-     * @param aRetourner nouveau aRetourner
-     */
-    public void setaRetourner(String aRetourner) {
-        this.aRetourner = aRetourner;
-    }
-
-    /**
-     * Acceseur à lieuMauvaisArgument
-     * @return lieuMauvaisArgument 
-     */
-    public int getLieuMauvaisArgument() {
-        return lieuMauvaisArgument;
-    }
-
-    /**
-     * Mutateur de lieuMauvaisArgument
-     * @param lieuMauvaisArgument nouveau lieuMauvaisArgument
-     */
-    public void setLieuMauvaisArgument(int lieuMauvaisArgument) {
-        this.lieuMauvaisArgument = lieuMauvaisArgument;
-    }
-    
-    /**
-     * Acceseur à df
-     * @return df 
-     */
-    public DecimalFormat getDf() {
-        return df;
-    }
-
-    /**
-     * Teste si une zone mémoire que l'on souhaite exploitée est initialisée
-     * @param aTester Chaine à tester qui doit être une zone mémoire
-     * @return true si la zone mémoire est initialisée, false sinon
-     */
-    public boolean estInitialisee(String aTester) {
-    
-        return !this.laFenetre.getLaMemoire()
-                .getContenuZones()[aTester.charAt(0) - 65].getText().equals("");
-    }
-
-    /**
-     * Vérifie si une chaine est un opérateur
-     * @param aTester Chaine à tester
-     * @return true si aTester est un opérateur, false sinon
-     */
-    public static boolean estUnOperateur(String aTester) {
-        return Pattern.compile(REGEX_OPERATEUR).matcher(aTester).matches();        
-    }
-
-    /**
-     * Teste si une chaine de caractère est un entier
-     * @param aTester Chaine à tester
-     * @return true s'il s'agit d'un entier, false sinon
-     */
-    public static boolean estUnEntier(String aTester) {
-        return Pattern.compile(REGEX_ENTIER).matcher(aTester).matches();
-    }
-
-    /**
-     * Teste si une chaine de caractère est un double
-     * @param aTester Chaine à tester
-     * @return true s'il s'agit d'un double, false sinon
-     */
-    public static boolean estUnDouble(String aTester) {
-        return Pattern.compile(REGEX_DOUBLE).matcher(aTester).matches();
-    }
-    
 }

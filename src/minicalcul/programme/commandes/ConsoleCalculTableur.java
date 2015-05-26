@@ -1,6 +1,6 @@
 /* 
- * ConsoleTableur.java                            16 avr. 2015
- * IUT info1 Groupe 3 2014-2015
+ * ConsoleCalculTableur.java                            16 avr. 2015
+ * IUT INFO1 Projet S2 2014-2015
  */
 package minicalcul.programme.commandes;
 
@@ -10,11 +10,28 @@ import minicalcul.fenetre.FenetrePrincipale;
 import minicalcul.programme.tableur.Tableur;
 
 /**
- * Objet permettant d'intéragir avec le tableur
+ * Objet effectuant des instructions de calculs simple (+, -, *, /) en acceptant
+ * les parenthèses. Le résultat d'une opération devra être affectée dans une
+ * cellule du tabeur auquel cet objet sera associé (A1..Z20). Le contenu de ces
+ * cellules pourra être récupéré dans une opération grâce à son identifiant.
+ * Si l'opération est correcte, l'objet retourne le résultat de l'opération,
+ * sinon il renvoie une erreur. 
+ * @author Thomas Affre
+ * @author Thibaut Méjane
+ * @author Florian Louargant
  * @author Clément Zeghmati
- * @version 0.1
+ * @version 1.1
  */
 public class ConsoleCalculTableur extends ConsoleCalculSimple {
+    
+    /** Message affiché lorsqu'il y a un problème d'affectation */
+    protected static final String MSG_MAUVAISE_AFFECTATION = "Erreur "
+            + "d'affectation : une et une seule affectation doit être faite.";
+    
+    /** Message affiché lorsqu'une cellule non initialisée est impliquée */
+    protected static final String MSG_CELLULE_NON_INITIALISEE = "Calcul "
+            + "impossible : une cellule non initialisée est impliquée dans "
+            + "ce calcul.";
 
     /** Référence au tableur afin de pouvoir intéragir avec */
     private Tableur leTableur;
@@ -29,6 +46,7 @@ public class ConsoleCalculTableur extends ConsoleCalculSimple {
             Tableur leTableur) {
         super(laFenetre);
         this.leTableur = leTableur;
+        this.reinitialisation();
     }
     
     /* (non-Javadoc)
@@ -38,121 +56,173 @@ public class ConsoleCalculTableur extends ConsoleCalculSimple {
     @Override
     public String traitementCommande(String commande) {
         // On commence par réinitialiser l'état de cet objet
-        this.reinitialisation();
+        super.reinitialisation();
 
-        // On découpe la chaine avec les espaces en conservant l'originale
-        this.setCommande(commande);
-        this.setInstructions(commande.split(" "));
+        /*
+         * On découpe la chaine avec les espaces en conservant l'originale et
+         * en enlevant les espaces multiples.
+         */
+        this.commande = commande.replace("  ", "");
+        this.instructions = this.commande.split(" ");
         
+        // On effectue tous les contrôles sur la commande
+        this.controleCommande();
+        
+        /*
+         * On tente de restaurer le contenu des cellules qu'il pourrait y avoir
+         * dans la commande. Si la restauration s'est bien passé, on peut
+         * continuer. Sinon, on ne déclenche pas d'errerurs mais on signale que
+         * le calcul est impossible.
+         */
+        if (!this.erreurTrouvee && !this.restaurationSauvegarde()) {
+            this.aRetourner = MSG_CELLULE_NON_INITIALISEE;
+            // On ne fait pas le calcul
+            return "> " + this.commande + "\n" + this.aRetourner ;
+        }  
+                        
+        // On peut faire le calcul s'il n'y a pas eu d'erreur trouvée
+        if (!this.erreurTrouvee) {
+            this.calculExpression();
+        }
+        
+        // On retourne le résultat ou l'erreur
+        return "> " + this.commande + "\n"
+                + (!this.erreurTrouvee ? (this.zoneAffecte + " modifiée.")
+                        : this.aRetourner);        
+    }
+    
+    /* (non-Javadoc)
+     * @see minicalcul.programme.commandes.ConsoleCalculSimple
+     *                  #controleCommande()
+     */
+    @Override
+    public void controleCommande() {
         // On vérifie la syntaxe des sous-chaines 
-        if (!this.verificationSyntaxe()) {
+        if (!super.verificationSyntaxe()) {
+            
             /*
              * On recherche le lieux de l'erreur et on retourne la localisation
-             * avec un message
+             * avec un message.
              */
             this.rechercheErreur(ERREUR_SYNTAXE);
         }
-                        
-        // On vérifie le format de la chaine s'il n'y a pas eu d'erreur avant.
-        if (!this.isErreurTrouvee() && !this.verificationFormat()) {
-            this.rechercheErreur(ERREUR_FORMAT);
+        
+        // Pour traiter la commande on enlève les éventuels $
+        for (int i = 0; i < this.instructions.length; i++) {
+            if (this.estUneMemoire(this.instructions[i])) {
+                this.instructions[i] = this.instructions[i].replace("$", "");
+            }
+        }
+                                
+        // On vérifie le format de la chaine s'il n'y a pas eu d'erreur avant
+        if (!this.erreurTrouvee) {
+            super.verificationFormat();
         }
         
         // Le nombre d'= doit être égal à 1 car il doit y avoir une affectation.
-        if (!this.isErreurTrouvee() && !this.verificationAffectation()) {
-            this.rechercheErreur(ERREUR_AFFECTATION);
+        if (!this.erreurTrouvee) {
+            this.verificationAffectation();
         }
-                
-        /*
-         * S'il n'y a pas eu d'erreur avant et que la restauration s'est mal
-         * passé, on déclenche une erreur. Si la restauration s'est bien passé,
-         * on peut continuer
-         */
-        if (!this.isErreurTrouvee() && !this.restaurationSauvegarde()) {
-            this.rechercheErreur(ERREUR_INTIALISATION);
-        }   
-        
-        // On peut faire le calcul s'il n'y a pas eu d'erreur avant
-        if (!this.isErreurTrouvee()) {
-
-            if (this.getNbParentheses() != 0) {
-                this.calculExpressionParenthese();
-
-                /*
-                 * Tous les calculs entre parenthèse ont été fait et les 
-                 * parenthèses ont été enlevées. Il reste donc une opération 
-                 * simple que l'on effectue.
-                 */
-                this.calculExpressionSimple(0, this.longueurInstruction() - 1);
-
-            } else {
-                this.calculExpressionSimple(0, this.getInstructions().length-1);           
-            }
-
-            // On teste si le résultat est un entier pour eviter la virgule
-            if (estUnEntier(this.getInstructions()[0])) {
-                this.getInstructions()[0] = Integer.toString(
-                        (int) Double.parseDouble(this.getInstructions()[0]));
-            }
-
-            // On affecte le résultat à la cellule
-            this.leTableur.affectationValeur(
-                    this.getZoneAffecte(), this.getInstructions()[0]);
-                     
-        }
-        
-        // On retourne le résultat s'il n'y a pas d'erreur
-        return !this.isErreurTrouvee() ? (this.getZoneAffecte() + " modifiée.")
-                        : this.getaRetourner();        
     }
-        
+
+    /* (non-Javadoc)
+     * @see minicalcul.programme.commandes.ConsoleCalculSimple
+     *                  #calculExpression()
+     */
+    @Override
+    public void calculExpression() {
+        if (this.nbParentheses != 0) {
+            /*
+             * On effectue tous les calculs entre parenthèses et on enlève
+             * toutes les parenthèses.
+             */
+            super.calculExpressionParenthese();
+
+            /*
+             * Tous les calculs entre parenthèses ont été fait et les 
+             * parenthèses ont été enlevées. Il reste donc une opération 
+             * simple que l'on effectue.
+             */
+            super.calculExpressionSimple(0, this.longueurInstruction() - 1);
+
+        } else {
+            // Pas de parenthèses
+            super.calculExpressionSimple(0, this.instructions.length - 1);           
+        }
+
+        // On arrondit le résultat
+        super.arrondissementResultat();
+
+        // On affecte le résultat à la cellule
+        this.leTableur.affectationValeur(
+                this.zoneAffecte, this.instructions[0]);
+    }
+
     /* (non-Javadoc)
      * @see minicalcul.programme.commandes.Console#rechercheErreur(int)
      */
     @Override
-    public void rechercheErreur(int typeErreur) {
+    protected void rechercheErreur(int typeErreur) {
         int posErreur = 0;
-        this.setErreurTrouvee(true); // Erreur déclenchée
+        this.erreurTrouvee = true; // Erreur déclenchée
         StringBuilder tmpARetourner = new StringBuilder("  ");
 
         // On recherche la position de l'erreur dans la chaine originale
-        for (int i = 0; i < this.getCommande().length()
-                && posErreur < this.getLieuMauvaisArgument(); i++) {
-            if (this.getCommande().charAt(i) == ' ') {
+        for (int i = 0; i < this.commande.length()
+                && posErreur < this.lieuMauvaisArgument; i++) {
+            if (this.commande.charAt(i) == ' ') {
                 posErreur++;
             }
             tmpARetourner.append(" ");
         }
-
+        // On rajoute un accent pour montrer le lieu de l'erreur
+        tmpARetourner.append("^\n");
+        
         // On rajoute le type d'erreur
-        if (typeErreur == ERREUR_SYNTAXE) {       
-            this.setaRetourner(tmpARetourner.append(
-             "^\nErreur de syntaxe : symbole \"" 
-             + this.getInstructions()[this.getLieuMauvaisArgument()]).toString()
-             + "\" inconnu.");
-        } else if (typeErreur == ERREUR_AFFECTATION) {
-            this.setaRetourner(tmpARetourner.append(
-              "^\nErreur d'affectation : une affectation doit être faite.")
-              .toString());
-        
-        } else if (typeErreur == ERREUR_FORMAT) {
-            if (this.getNbParentheses() == -1) {
-                // Problème au niveau des parenthèses
-                this.setaRetourner(tmpARetourner.append("^\nErreur de format :"
-                        + " le nombre de parenthèses ouvrantes et fermantes"
-                        + " doit être équivalent.").toString());
-            } else {
-                // Problème avec le tableau de vérité
-                this.setaRetourner(tmpARetourner.append("^\nErreur de format :"
-                        + " symbole innatendu.").toString());
-            }
-        
-        } else if (typeErreur == ERREUR_INTIALISATION) {
-            this.setaRetourner(tmpARetourner.append(
-             "^\nCalcul impossible : \""
-             + this.getInstructions()[this.getLieuMauvaisArgument()]).toString()
-             + "\" n'a pas été initialisée.");
-        }         
+        switch (typeErreur) {
+        case ERREUR_SYNTAXE:
+            this.aRetourner = tmpARetourner.append(
+                    "Erreur de syntaxe : symbole \"" + this.instructions
+                    [this.lieuMauvaisArgument]).toString()+ "\" inconnu.";
+            break;
+            
+        case ERREUR_MAUVAISE_FIN :
+            this.aRetourner = tmpARetourner.append(MSG_MAUVAISE_FIN).toString();
+            break;
+            
+        case ERREUR_MAUVAIS_DEBUT :
+            this.aRetourner = tmpARetourner.append(
+                    MSG_MAUVAIS_DEBUT).toString();
+            break;
+            
+        case ERREUR_EQUIVALENCE_PARENTHESES :
+            this.aRetourner = tmpARetourner.append(
+                    MSG_MAUVAISES_PARENTHESES).toString();
+            break;
+            
+        case ERREUR_MAUVAIS_SUCCESSEUR:
+            this.aRetourner = tmpARetourner.append("Erreur de format : "
+                    + ELEMENTS_EN_CHAINE
+                    [this.typesSousChaines[this.lieuMauvaisArgument - 1]] 
+                    +" ne peut être suivi d'" + ELEMENTS_EN_CHAINE
+                    [this.typesSousChaines[this.lieuMauvaisArgument]] + ".")
+                    .toString();
+            break;
+            
+        case ERREUR_PARENTHESES_APRES_EGAL :
+            this.aRetourner = tmpARetourner.append(
+                    MSG_PARENTHESE_APRES_EGAL).toString();
+            break;
+            
+        case ERREUR_AFFECTATION :
+            this.aRetourner = tmpARetourner.append(
+                    MSG_MAUVAISE_AFFECTATION).toString();
+            break;
+        case ERREUR_OPERATION_APRES_EGAL :
+            this.aRetourner = tmpARetourner.append(
+                    MSG_OPERATION_APRES_EGAL).toString();
+            break;
+        }            
     }
          
     /* (non-Javadoc)
@@ -161,12 +231,40 @@ public class ConsoleCalculTableur extends ConsoleCalculSimple {
      */
     @Override
     public boolean verificationAffectation() {
+        // On récupère le nombre d'= dans l'expression
+        int compteur = super.nombreEgalExpression();
+        
         // On contrôle qu'il y ait un égale et que l'affectation soit correcte
-        if (!(this.nombreEgaleExpression() == 1 && affectationCorrecte())) {
-            this.setLieuMauvaisArgument(this.getInstructions().length - 1);
+        if (compteur == 1 && super.affectationCorrecte()) {
+            return true;
+        } // else mauvaise affectation
+        
+        /*
+         * Il est possible que l'utilisateur ait utilisé des parenthèses après
+         * un égal donc on vérifie.
+         */
+        for (int i = this.typesSousChaines.length - 1; i >= 0; i--) {
+            
+            if (this.typesSousChaines[i] == 2 
+                    || this.typesSousChaines[i] == 3) {
+                this.lieuMauvaisArgument = i;
+                this.rechercheErreur(ERREUR_PARENTHESES_APRES_EGAL);
+                return false;
+            }
+        }
+        
+        // On vérifie qu'il n'y ait pas d'opération après le égal
+        if (compteur == 1 && !this.instructions[this.instructions.length - 2]
+                .equals("=")) {
+            // Le égal est mal placé
+            this.lieuMauvaisArgument = this.instructions.length - 1;
+            this.rechercheErreur(ERREUR_OPERATION_APRES_EGAL);
             return false;
         }
-        return true;
+        
+        this.lieuMauvaisArgument = this.instructions.length;
+        this.rechercheErreur(ERREUR_AFFECTATION);
+        return false;
     }
     
     /* (non-Javadoc)
@@ -175,7 +273,6 @@ public class ConsoleCalculTableur extends ConsoleCalculSimple {
      */
     @Override
     public boolean restaurationSauvegarde() {
-        
         /*
          * Passe à true s'il y a eu une restauration à faire. Si c'est le cas,
          * on doit le spécifier dans la cellule comme quoi il s'agit d'une
@@ -184,29 +281,27 @@ public class ConsoleCalculTableur extends ConsoleCalculSimple {
         boolean restauration = false;
                 
         // On peut s'arrêter de rechercher lorsqu'on rencontre un =
-        for (int i = 0; i < this.getInstructions().length
-                && !this.getInstructions()[i].equals("="); i++) {
+        for (int i = 0; i < this.instructions.length
+                && !this.instructions[i].equals("="); i++) {
             
-            if (estUneMemoire(this.getInstructions()[i])) {
-                
+            if (this.estUneMemoire(this.instructions[i])) {
                 // S'il s'agit d'une cellule, on vérifie si elle est initialisée
-                if (this.leTableur.celluleInitialisee(
-                        this.getInstructions()[i])) {
+                if (this.estInitialisee(this.instructions[i])) {
                     // On récupère la valeur
-                    this.getInstructions()[i] = this.leTableur.
-                            restaurationCellule(this.getInstructions()[i]);
+                    this.instructions[i] = this.leTableur.
+                            restaurationValeurCellule(this.instructions[i]);
                     restauration = true;
                 } else { // Erreur : zone non initialisée
-                    this.setLieuMauvaisArgument(i);
+
+                    this.lieuMauvaisArgument = i;
                     /*
                      * On remplit la cellule avec un ? afin de le spécifier que
                      * l'affectation est impossible. On le signale également à
                      * l'utilisateur  
                      */
                     this.leTableur.affectationFormule(
-                            this.getZoneAffecte(), this.getCommande());
-                    this.leTableur.affectationValeur(
-                            this.getZoneAffecte(), "?");
+                            this.zoneAffecte, this.commande);
+                    this.leTableur.affectationValeur(this.zoneAffecte, "?");
                     return false;  // On sort ici car opération impossible
                 }
             }
@@ -216,17 +311,16 @@ public class ConsoleCalculTableur extends ConsoleCalculSimple {
             // On spécifie que la cellule va contenir une formule
             this.leTableur.affectationFormule(
                     // Cellule
-                    this.getInstructions()[this.getInstructions().length - 1],
+                    this.instructions[this.instructions.length - 1],
                     // Formule que l'on copie pour la garder
-                    new String(this.getCommande()));
+                    new String(this.commande));
         } else {
             // On spécifie que la cellule ne contiendra pas de formule
             this.leTableur.reinitialisationCellule(
                     // Cellule
-                    this.getInstructions()[this.getInstructions().length - 1]);
+                    this.instructions[this.instructions.length - 1]);
         }
-        
-        return true;
+        return true; // Les restaurations éventuelles se sont bien déroulées
     }
 
     /* (non-Javadoc)
@@ -234,8 +328,18 @@ public class ConsoleCalculTableur extends ConsoleCalculSimple {
      *                  #estUneMemoire(java.lang.String)
      */
     @Override
-    public boolean estUneMemoire(String aTester) {
-        return Pattern.compile(REGEX_CELLULE).matcher(aTester).matches();
+    protected boolean estUneMemoire(String aTester) {
+        return Pattern.compile(REGEX_CELLULE).matcher(aTester).matches()
+                || Pattern.compile(REGEX_CELLULE_BLOCAGE).
+                   matcher(aTester).matches();
     }
     
+    /* (non-Javadoc)
+     * @see minicalcul.programme.commandes.Console
+     *                  #estInitialisee(java.lang.String)
+     */
+    @Override
+    protected boolean estInitialisee(String aTester) {
+        return this.leTableur.celluleInitialisee(aTester);
+    }
 }

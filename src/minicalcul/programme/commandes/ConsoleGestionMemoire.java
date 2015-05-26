@@ -1,6 +1,6 @@
 /* 
- * ConsoleGestionMemoire.java                            14 avr. 2015
- * IUT info1 Groupe 3 2014-2015
+ * ConsoleGestionMemoire.java                            15 avr. 2015
+ * IUT INFO1 Projet S2 2014-2015
  */
 package minicalcul.programme.commandes;
 
@@ -9,57 +9,88 @@ import java.util.regex.Pattern;
 import minicalcul.fenetre.FenetrePrincipale;
 
 /**
- * Objet de gestion de la mémoire
+ * Objet contenant des commandes permettant d'intéragir avec des zones mémoires
+ * allant de A à Z.
+ * Toutes les explications sur les commandes sont contenu dans le champ de
+ * classe AIDE.
+ * @author Thomas Affre
+ * @author Thibaut Méjane
+ * @author Florian Louargant
  * @author Clément Zeghmati
- * @version 0.1
+ * @version 1.1
  */
 public class ConsoleGestionMemoire extends Console {
     
     /** Résumé des commandes de la gestion de la mémoire */
-    private static final String AIDE = 
+    public static final String AIDE = 
             "--------------- AIDE DU GESTIONNARE DE MEMOIRES --------------- \n"
             + " - RAZ [Zone ou plage mémoire]\n"
-            + "\tRemet à 0 les plages mémoires spécifiées ou toutes s'il n'y a "
-            + "\n\tpas d'arguments.\n\n"
+            + "\tRemet à 0 les zones mémoires spécifiées ou toutes s'il n'y a "
+            + "\n\tpas d'argument.\n\n"
             + " - INCR [Zone ou plage mémoire]\n"
             + "\tAjoute 1 aux zones mémoires spécifiées ou à toutes s'il n'y a "
-            + "\n\tpas d'arguments.\n\n"
+            + "\n\tpas d'argument.\n\n"
             + " - SOM [Zone ou plage mémoire]\n"
             + "\tAffiche la somme des zones mémoires spécifiées ou de toutes "
-            + "\n\ts'il n'y a pas d'arguments.\n\n"
+            + "\n\ts'il n'y a pas d'argument.\n\n"
             + " - PROD [Zone ou plage mémoire]\n"
             + "\tAffiche le produit des zones mémoires spécifiées ou de "
-            + "toutes \n\ts'il n'y a pas d'arguments.\n\n"
+            + "toutes \n\ts'il n'y a pas d'argument.\n\n"
             + " - MOY [Zone ou plage mémoire]\n"
-            + "\tAffiche la moyenne des zones mémoires spécifiées ou toutes "
-            + "\n\ts'il n'y a pas d'arguments.\n\n"
+            + "\tAffiche la moyenne arithmétique des zones mémoires spécifiées "
+            + "\n\tou de toutes s'il n'y a pas d'argument.\n\n"
             + " - SQRT [Zone ou plage mémoire]\n"
-            + "\tRemplace la valeur des cases mémoires spécifiées ou toutes "
-            + "\n\ts'il n'y a pas d'arguments, par leurs racines carrées "
+            + "\tRemplace la valeur des zones mémoires spécifiées ou de toutes "
+            + "\n\ts'il n'y a pas d'argument, par leurs racines carrées "
             + "\n\trespectives.\n\n"
             + " - CAR [Zone ou plage mémoire]\n"
-            + "\tRemplace la valeur des cases mémoires spécifiées ou toutes "
-            + "\n\ts'il n'y a pas d'arguments, par leurs carrées "
+            + "\tRemplace la valeur des zones mémoires spécifiées ou de toutes "
+            + "\n\ts'il n'y a pas d'argument, par leurs carrées "
             + "respectifs.\n\n"
-            + " - INIT {Zone ou plage mémoire} {valeur}\n"
-            + "\tInitialise les zones mémoires spécifiées à la valeur "
-            + "\n\tspécifiée.\n\n"
-            + " - ADD {Zone ou plage mémoire} {valeur}\n"
-            + "\tAjoute à la valeur des zones mémoires spécifiées la valeur "
-            + "\n\tspécifiée.\n\n"    
-            + " - MUL {Zone ou plage mémoire} {valeur}\n"
-            + "\tMultiplie la valeur des zones mémoires spécifiées par la "
-            + "\n\tvaleur spécifiée.\n\n"
-            + " - EXP {Zone ou plage mémoire} {valeur}\n"
-            + "\tElève la valeur des zones mémoires spécifiées à la puissance "
-            + "\n\tspécifiée.\n\n"
+            + " - INIT [Zone ou plage mémoire] {valeur}\n"
+            + "\tInitialise les zones mémoires spécifiées ou toutes s'il n'y a "
+            + "\n\tpas d'argument, à la valeur spécifiée.\n\n"
+            + " - ADD [Zone ou plage mémoire] {valeur}\n"
+            + "\tAjoute à la valeur des zones mémoires spécifiées ou toutes "
+            + "\n\ts'il n'y a pas d'argument, la valeur spécifiée.\n\n"    
+            + " - MUL [Zone ou plage mémoire] {valeur}\n"
+            + "\tMultiplie la valeur des zones mémoires spécifiées ou toutes "
+            + "\n\ts'il n'y a pas d'argument, par la valeur spécifiée.\n\n"
+            + " - EXP [Zone ou plage mémoire] {valeur}\n"
+            + "\tElève la valeur des zones mémoires spécifiées, ou à toutes "
+            + "\n\ts'il n'y a pas d'argument, à la puissance spécifiée.\n\n"
             + "[ ] : OPTIONNEL / { } : OBLIGATOIRE\n";
+    
+    /** Message affiché lorsqu'une plage mémoire est incorrecte */
+    protected static final String MSG_PLAGE_MEMOIRE_MAUVAISE = "Erreur de "
+            + "syntaxe : cet argument n'est pas une zone mémoire ou une plage "
+            + "de zones mémoire.";
+    
+    /** Message affiché lorsqu'une plage mémoire n'est pas rengée */
+    protected static final String MSG_PLAGE_MEMOIRE_NON_ORDONNEE = "Erreur "
+            + "de syntaxe : les bornes de la plage mémoire "
+            + "doivent être rangées dans l'ordre.";
+    
+    /** Message affiché lorsqu'une valeur est incorrecte */
+    protected static final String MSG_VALEUR_MAUVAISE = "Erreur "
+            + "d'argument : le deuxième argument doit être un réel.";
+    
+    /** Message affiché lorsqu'une valeur est attendue mais absente */
+    protected static final String MSG_VALEUR_ABSENTE = "Erreur d'argument : "
+            + "cette commande doit avoir une valeur en dernier argument.";
+    
+    /** Message affiché lorsqu'une plage entière n'est pas initialisée */
+    protected static final String MSG_PLAGE_NON_INITIALISEE = "Erreur "
+            + "d'initialisation : aucune zone de la plage n'est initialisée.";
     
     /** 
      * Plage des zones mémoires consernées par l'opération envoyée sous 
      * forme d'indices (A=0..Z=25)
      */
     private int[] plageMemoire;
+    
+    /** Valeur à affecter dans les commandes demandant une valeur (ex : INIT) */
+    protected String aAffecter;
 
     /**
      * Constructeur de la console de gestionnaire de la mémoire
@@ -68,8 +99,8 @@ public class ConsoleGestionMemoire extends Console {
      */
     public ConsoleGestionMemoire(FenetrePrincipale laFenetre) {
         this.setLaFenetre(laFenetre);
-        // Nombre de chiffre apres la virgule
-        this.getDf().setMaximumFractionDigits(5); 
+        this.instructions = new String[1];
+        this.reinitialisation();
     }
 
     /* (non-Javadoc)
@@ -78,16 +109,15 @@ public class ConsoleGestionMemoire extends Console {
      */
     @Override
     public String traitementCommande(String commande) {
-        
         // On commence par réinitialiser l'état de cette console
         this.reinitialisation();
 
         // On découpe la chaine avec les espaces
-        this.setCommande(commande);
-        this.setInstructions(commande.split(" "));
+        this.commande = commande;
+        this.instructions = commande.split(" ");
 
         // On regarde quelle instruction est demandée
-        switch (this.getInstructions()[0].toString()) {
+        switch (this.instructions[0].toString()) {
         case "RAZ" : // Remise à zéro
             this.raz();
             break;
@@ -122,68 +152,71 @@ public class ConsoleGestionMemoire extends Console {
             this.exposant();
             break;
         case "AIDE" : // Aide
-            this.setaRetourner(AIDE);
+            this.aRetourner = AIDE;
             break;
         default :
-            this.setaRetourner("  ^\nErreur de syntaxe : la commande \""
-                    + this.getInstructions()[0] + "\" n'existe pas.");
+            // Commande inconnue
+            this.aRetourner = "  ^\nErreur de syntaxe : la commande \""
+                    +  this.instructions[0] + "\" n'existe pas.";
         }
-        
-        return this.getaRetourner();
+        return this.aRetourner;
     }
 
     /* (non-Javadoc)
      * @see minicalcul.programme.commandes.Console#reinitialisation()
      */
     @Override
-    public void reinitialisation() {
-        this.setCommande(null);
-        this.setInstructions(null);
-        this.setErreurTrouvee(false);
-        this.setaRetourner(null);
-        this.setLieuMauvaisArgument(-1);
-        this.plageMemoire = null;        
+    protected void reinitialisation() {
+        this.commande = null;
+        this.instructions = null;
+        this.erreurTrouvee = false;
+        this.aRetourner = null;
+        this.lieuMauvaisArgument = 0;
+        this.plageMemoire = null;     
+        this.aAffecter = null;
     }
 
     /* (non-Javadoc)
      * @see minicalcul.programme.commandes.Console#rechercheErreur(int)
      */
     @Override
-    public void rechercheErreur(int typeErreur) {
+    protected void rechercheErreur(int typeErreur) {
         int posErreur = 0;
-        this.setErreurTrouvee(true); // Erreur déclenchée
+        this.erreurTrouvee = true; // Erreur déclenchée
         StringBuilder tmpARetourner = new StringBuilder("  ");
 
         // On recherche la position de l'erreur dans la chaine originale
-        for (int i = 0; i < this.getCommande().length()
-                && posErreur < this.getLieuMauvaisArgument(); i++) {
-            if (this.getCommande().charAt(i) == ' ') {
+        for (int i = 0; i < this.commande.length()
+                && posErreur < this.lieuMauvaisArgument; i++) {
+            if (this.commande.charAt(i) == ' ') {
                 posErreur++;
             }
             tmpARetourner.append(" ");
         }
-
+        // On rajoute un accent pour montrer le lieu de l'erreur
+        tmpARetourner.append("^\n");
+        
         switch (typeErreur) {
-        case ERREUR_NB_ARGUMENTS :
-            this.setaRetourner(tmpARetourner.append("^\nErreur d'arguments : "
-                    + "la commande " + this.getInstructions()[0] + " prend "                  
-                    + nbArgumentsCommande() + " argument(s)").toString());
+        case ERREUR_NB_ARGUMENT :
+            this.aRetourner = tmpARetourner.append("Erreur d'argument : "
+                    + "la commande " + this.instructions[0] + " prend "                  
+                    + this.nbArgumentsCommande() + " arguments.").toString();
             break;
-        case ERREUR_PLAGE_MEMOIRES :
-            this.setaRetourner(tmpARetourner.append(
-                    "^\nErreur de syntaxe : \"" 
-             + this.getInstructions()[this.getLieuMauvaisArgument()]).toString()
-             + "\" n'est pas une zone mémoire ou une plage de zones mémoire.");
+        case ERREUR_PLAGE_MEMOIRE :
+            this.aRetourner = tmpARetourner.append(
+                    MSG_PLAGE_MEMOIRE_MAUVAISE).toString();
             break;
-        case ERREUR_ORDRE_PLAGE_MEMOIRES :
-            this.setaRetourner(tmpARetourner.append(
-                    "^\nErreur de syntaxe : les bornes de la plage mémoire "
-                            + "doivent être rangées dans l'ordre.").toString());
+        case ERREUR_ORDRE_PLAGE_MEMOIRE :
+            this.aRetourner = tmpARetourner.append(
+                    MSG_PLAGE_MEMOIRE_NON_ORDONNEE).toString();
             break;
         case ERREUR_VALEUR_ARGUMENT :
-            this.setaRetourner(tmpARetourner.append(
-                    "^\nErreur d'arguments : le deuxième argument "
-                            + "doit être un réel.").toString());
+            this.aRetourner = tmpARetourner.append(
+                    MSG_VALEUR_MAUVAISE).toString();
+            break;
+        case ERREUR_VALEUR_ABSENTE :
+            this.aRetourner = tmpARetourner.append(
+                    MSG_VALEUR_ABSENTE).toString();
             break;
         }        
     }
@@ -192,14 +225,11 @@ public class ConsoleGestionMemoire extends Console {
      * Remet à 0 les cases spécifiées en argument ou toutes si aucun argument
      * n'est spécifié
      */
-    private void raz() {
-        // On vérifie d'abord qu'il n'y ait qu'un seul argument ou 0
-        if (!verificationNombreArgument("RAZ")) {
-            return;
-        } // else le nombre d'argument est bon
-
-        // On contrôle s'il n'y a qu'une zone mémoire ou une plage
-        this.controlePlageMemoire();        
+    protected void raz() {
+        // On contrôle les arguments
+        if (!this.controleValiditeArgument("RAZ")) {
+            return;     // Inutile de continuer
+        }
         
         // On applique la remise à zéro si l'argument de RAZ est correct
         if (this.plageMemoire != null) {
@@ -207,22 +237,21 @@ public class ConsoleGestionMemoire extends Console {
                 this.getLaFenetre().getLaMemoire().affectationMemoire(i, "0");
             }
             
-            // Toutes les zones mémoires
-            if (this.getInstructions().length == 1) {
+            if (this.instructions.length == 1) {
                 // Toutes les zones mémoires
-                this.setaRetourner("Toutes les zones mémoires ont été remises" 
-                        + " à zéro.");
+                this.aRetourner = "Toutes les zones mémoires ont été remises" 
+                        + " à zéro.";
                 
             } else if (this.plageMemoire[0] != this.plageMemoire[1]) {
                 // Plage de zones mémoire
-                this.setaRetourner("Les zones mémoires de " 
-                        + this.getInstructions()[1].charAt(0) + " à "
-                        + this.getInstructions()[1].charAt(3)
-                        + " ont été remises à zéro.");
+                this.aRetourner = "Les zones mémoires de " 
+                        + this.instructions[1].charAt(0) + " à "
+                        + this.instructions[1].charAt(3)
+                        + " ont été remises à zéro.";
             } else {
                 // Une seule zone mémoire
-                this.setaRetourner(this.getInstructions()[1].charAt(0)
-                        + " a été remis à zéro.");
+                this.aRetourner = this.instructions[1].charAt(0)
+                        + " a été remise à zéro.";
             }
         }
     }
@@ -232,13 +261,10 @@ public class ConsoleGestionMemoire extends Console {
      * est saisie sans argument
      */
     private void incremente() {
-        // On vérifie d'abord qu'il n'y ait qu'un seul argument ou 0
-        if (!verificationNombreArgument("INCR")) {
-            return;
-        } // else le nombre d'argument est bon
-        
-        // On contrôle s'il n'y a qu'une zone mémoire ou une plage
-        this.controlePlageMemoire();    
+        // On contrôle les arguments
+        if (!this.controleValiditeArgument("INCR")) {
+            return;     // Inutile de continuer
+        } 
         
         /*
          * On incrémente seulement les cases initialisées. Donc on garde une
@@ -270,130 +296,111 @@ public class ConsoleGestionMemoire extends Console {
                             + " car elle n'est pas initialisée.\n");
                 }
             }
-            this.setaRetourner(aRetourner.toString());
+            this.aRetourner = aRetourner.toString();
         }
     }
 
     /**
      * Affiche la somme des contenus des zones mémoires spécifiées en argument
-     * ou toutes les zones mémoires si la commande est saisie sans argument
+     * ou toutes les zones mémoires si la commande est saisie sans argument.
      */
     private void somme() {
-        // On vérifie d'abord qu'il n'y ait qu'un seul argument ou 0
-        if (!verificationNombreArgument("SOM")) {
-            return;
-        } // else le nombre d'argument est bon
-        
-        // On contrôle s'il n'y a qu'une zone mémoire ou une plage
-        this.controlePlageMemoire();
+        // On contrôle les arguments
+        if (!this.controleValiditeArgument("SOM")) {
+            return;     // Inutile de continuer
+        }
         
         double somme = 0; // Somme a retourner
         
-        // On fait la somme si l'argument de SOM est bon ou inexistant
-        if (this.plageMemoire != null) { 
-            for (int i = this.plageMemoire[0]; i <= this.plageMemoire[1]; i++) {
-                // On garde la lettre de la zone (A = 65)
-                String tmpZone = new Character((char) (65 + i)).toString();
-                
-                // On vérifie que la zone mémoire est initialisée
-                if (estInitialisee(tmpZone)) {
-                    somme += Double.parseDouble(this.contenuZoneMemoire(i));
-                }
+        for (int i = this.plageMemoire[0]; i <= this.plageMemoire[1]; i++) {
+            // On garde la lettre de la zone (A = 65)
+            String tmpZone = new Character((char) (65 + i)).toString();
+
+            // On vérifie que la zone mémoire est initialisée
+            if (estInitialisee(tmpZone)) {
+                somme += Double.parseDouble(this.contenuZoneMemoire(i));
             }
-            
-            // Comme c'est un double, on regarde si on peut enlevé la virgule
-            this.setaRetourner("= " + (estUnEntier(Double.toString(somme)) ? 
-              Integer.toString((int) Double.parseDouble(Double.toString(somme)))
-                               : Double.toString(somme)));
         }
-        
+
+        // Comme c'est un double, on regarde si on peut enlevé la virgule
+        this.aRetourner = "= " + (estUnEntier(Double.toString(somme)) ? 
+              Integer.toString((int) Double.parseDouble(Double.toString(somme)))
+                : Double.toString(somme));
     }
 
     /**
      * Affiche le produit des contenus des zones mémoires spécifiées en argument
-     * ou toutes les zones mémoires si la commande est saisie sans argument
+     * ou toutes les zones mémoires si la commande est saisie sans argument.
      */
     private void produit() {
-        
-        // On vérifie d'abord qu'il n'y ait qu'un seul argument ou 0
-        if (!verificationNombreArgument("PROD")) {
-            return;
-        } // else le nombre d'argument est bon
-        
-        // On contrôle s'il n'y a qu'une zone mémoire ou une plage
-        this.controlePlageMemoire();
+        // On contrôle les arguments
+        if (!this.controleValiditeArgument("PROD")) {
+            return;     // Inutile de continuer
+        }
         
         double produit = 1; // Produit a retourner
         boolean initialise = false; // = true si une zone est intialisée
         
         // On fait le produit si l'argument de PROD est bon ou inexistant
-        if (this.plageMemoire != null) { 
-            for (int i = this.plageMemoire[0]; i <= this.plageMemoire[1]; i++) {
-                // On garde la lettre de la zone (A = 65)
-                String tmpZone = new Character((char) (65 + i)).toString();
-                
-                // On vérifie que la zone mémoire est initialisée
-                if (estInitialisee(tmpZone)) {
-                    produit *= Double.parseDouble(this.contenuZoneMemoire(i));
-                    initialise = true;
-                }
+        for (int i = this.plageMemoire[0]; i <= this.plageMemoire[1]; i++) {
+            // On garde la lettre de la zone (A = 65)
+            String tmpZone = new Character((char) (65 + i)).toString();
+
+            // On vérifie que la zone mémoire est initialisée
+            if (estInitialisee(tmpZone)) {
+                produit *= Double.parseDouble(this.contenuZoneMemoire(i));
+                initialise = true;
             }
-            
-            if (initialise) {
-                // Comme c'est un double, on regarde si on peut enlevé la ,
-                this.setaRetourner("= " + (estUnEntier(Double.toString(produit)) 
-                        ? Integer.toString((int) Double.parseDouble(
-                                Double.toString(produit))) 
-                                : Double.toString(produit)));
-            } else {
-                // Aucune Zone n'est initialisée
-                this.setaRetourner("     ^\nErreur de calcul : Aucune zone"
-                        + " n'est initialisée.");
-            }
+        }
+
+        if (initialise) {
+            // Comme c'est un double, on regarde si on peut enlevé la ,
+            this.aRetourner = "= " + (estUnEntier(Double.toString(produit)) 
+                    ? Integer.toString((int) Double.parseDouble(
+                            Double.toString(produit))) 
+                            : Double.toString(produit));
+        } else {
+            // Aucune Zone n'est initialisée
+            this.aRetourner = MSG_PLAGE_NON_INITIALISEE;
         }
     }
 
     /**
      * Affiche la moyenne des contenus des zones mémoires spécifiées en argument
-     * ou toutes les zones mémoires si la commande est saisie sans argument
+     * ou toutes les zones mémoires si la commande est saisie sans argument.
      */
     private void moyenne() {
-        // On vérifie d'abord qu'il n'y ait qu'un seul argument ou 0
-        if (!verificationNombreArgument("MOY")) {
-            return;
-        } // else le nombre d'argument est bon
-        
-        // On contrôle s'il n'y a qu'une zone mémoire ou une plage
-        this.controlePlageMemoire();
+        // On contrôle les arguments
+        if (!this.controleValiditeArgument("MOY")) {
+            return;     // Inutile de continuer
+        }
         
         double moyenne = 0; // Moyenne a retourner
         int nbNombre = 0;   // Compteur de nombres
         
-        // On fait le produit si l'argument de MOY est bon ou inexistant
-        if (this.plageMemoire != null) { 
-            for (int i = this.plageMemoire[0]; i <= this.plageMemoire[1]; i++) {
-                // On garde la lettre de la zone (A = 65)
-                String tmpZone = new Character((char) (65 + i)).toString();
-                
-                // On vérifie que la zone mémoire est initialisée
-                if (estInitialisee(tmpZone)) {
-                    moyenne += Double.parseDouble(this.contenuZoneMemoire(i));
-                    nbNombre++;
-                }
+        for (int i = this.plageMemoire[0]; i <= this.plageMemoire[1]; i++) {
+            // On garde la lettre de la zone (A = 65)
+            String tmpZone = new Character((char) (65 + i)).toString();
+
+            // On vérifie que la zone mémoire est initialisée
+            if (estInitialisee(tmpZone)) {
+                moyenne += Double.parseDouble(this.contenuZoneMemoire(i));
+                nbNombre++;
             }
-            
-            if (nbNombre != 0) {
-                moyenne /= nbNombre;
-                // Comme c'est un double, on regarde si on peut enlevé la ,
-                this.setaRetourner("= " + (estUnEntier(Double.toString(moyenne)) 
-                        ? Integer.toString((int) Double.parseDouble(
-                                Double.toString(moyenne))) 
-                                : Double.toString(moyenne)));
-            } else {
-                // Aucune Zone n'est initialisée
-                this.setaRetourner("     ^\nErreur de calcul : Aucune zone"
-                        + " n'est initialisée.");
-            }
+        }
+
+        if (nbNombre != 0) {
+            moyenne /= nbNombre;
+            // Comme c'est un double, on regarde si on peut enlevé la ,
+            this.aRetourner = "= " + (estUnEntier(Double.toString(moyenne)) 
+                    ? Integer.toString((int) Double.parseDouble(
+                            Double.toString(moyenne))) 
+                            // On tente d'arrondir le réel
+                            : this.getARRONDIR().format(
+                                 Double.parseDouble(Double.toString(moyenne))));
+        } else {
+            // Aucune Zone n'est initialisée
+            this.aRetourner = MSG_PLAGE_NON_INITIALISEE;
         }
     }
 
@@ -404,13 +411,10 @@ public class ConsoleGestionMemoire extends Console {
      * est possible. Sinon il ne fait rien.
      */
     private void racineCarre() {
-        // On vérifie d'abord qu'il n'y ait qu'un seul argument ou 0
-        if (!verificationNombreArgument("SQRT")) {
-            return;
-        } // else le nombre d'argument est bon
-        
-        // On contrôle s'il n'y a qu'une zone mémoire ou une plage
-        this.controlePlageMemoire();    
+        // On contrôle les arguments
+        if (!this.controleValiditeArgument("SQRT")) {
+            return;     // Inutile de continuer
+        }  
         
         /*
          * On remplace le contenu par la racine carré seulement si les cases
@@ -426,7 +430,7 @@ public class ConsoleGestionMemoire extends Console {
                 String tmpZone = new Character((char) (65 + i)).toString();
                 
                 // On vérifie que la zone mémoire est initialisée et positive
-                if (estInitialisee(tmpZone) && estPositif(tmpZone)) {
+                if (estInitialisee(tmpZone) && contenuMemoirePositif(tmpZone)) {
                     // On prend le contenu
                     double contenu = Double.parseDouble(
                             this.contenuZoneMemoire(i));
@@ -447,23 +451,20 @@ public class ConsoleGestionMemoire extends Console {
                             + " ou son contenu est négatif.\n");
                 }
             }
-            this.setaRetourner(aRetourner.toString());
+            this.aRetourner = aRetourner.toString();
         }
     }
 
     /**
      * Calcule le carré des contenus des zones mémoires spécifiées en argument
-     * ou toutes les zones mémoires si la commande est saisie sans 
-     * argument. Le résultat écrase le contenu de la zone mémoire. 
+     * ou toutes les zones mémoires si la commande est saisie sans argument.
+     * Le résultat écrase le contenu de la zone mémoire. 
      */
     private void carre() {
-        // On vérifie d'abord qu'il n'y ait qu'un seul argument ou 0
-        if (!verificationNombreArgument("CAR")) {
-            return;
-        } // else le nombre d'argument est bon
-        
-        // On contrôle s'il n'y a qu'une zone mémoire ou une plage
-        this.controlePlageMemoire();
+        // On contrôle les arguments
+        if (!this.controleValiditeArgument("CAR")) {
+            return;     // Inutile de continuer
+        }
         
         /*
          * On remplace le contenu par la racine carré seulement si les cases
@@ -496,7 +497,7 @@ public class ConsoleGestionMemoire extends Console {
                     aRetourner.append(tmpZone + " n'est pas initialisée.\n");
                 }
             }
-            this.setaRetourner(aRetourner.toString());
+            this.aRetourner = aRetourner.toString();
         }
     }
 
@@ -504,32 +505,14 @@ public class ConsoleGestionMemoire extends Console {
      * Initialise les zones mémoires spécifiées en premier argument avec la
      * valeur spécifiée en second argument.
      */
-    public void initialisation() {
-        // On vérifie d'abord qu'il y ait 2 arguments
-        if (!verificationNombreArgument("INIT")) {
-            return;
-        } // else le nombre d'argument est bon
-        
-        // On contrôle s'il n'y a qu'une zone mémoire ou une plage
-        this.controlePlageMemoire();
-        
-        /*
-         * On récupère le deuxième argument qui sera le contenu de la zone
-         * s'il s'agit bien d'un double
-         */
-        String valeur = null; // Initialisation bidon
-        if (estUnDouble(this.getInstructions()[2])) {
-            // On contrôle si on peut enlevé la virgule s'il y en a une
-            valeur = estUnEntier(this.getInstructions()[2]) ? Integer.toString(
-                    (int) Double.parseDouble(this.getInstructions()[2])) 
-                    : this.getInstructions()[2];
-                    
-        } else {
-            // La valeur est mauvaise (2ème argument)
-            this.setLieuMauvaisArgument(2);
-            this.rechercheErreur(ERREUR_VALEUR_ARGUMENT);
-            return;
+    protected void initialisation() {
+        // On contrôle les arguments
+        if (!this.controleValiditeArgument("INIT")) {
+            return;     // Inutile de continuer
         }
+        
+        // On contrôle la valeur en l'arrondissant s'il s'agit d'un réel
+        this.controleValeur();
         
         // On garde une trace sur la console
         StringBuilder aRetourner = new StringBuilder("");
@@ -541,12 +524,13 @@ public class ConsoleGestionMemoire extends Console {
                 String tmpZone = new Character((char) (65 + i)).toString();
 
                 // On affecte la valeur
-                this.getLaFenetre().getLaMemoire().affectationMemoire(i,valeur);
+                this.getLaFenetre().getLaMemoire().affectationMemoire(i,
+                        this.aAffecter);
 
                 aRetourner.append(tmpZone + " a été inintialisée à "
-                        + valeur + ".\n");
+                        + this.aAffecter + ".\n");
             }
-            this.setaRetourner(aRetourner.toString());
+            this.aRetourner = aRetourner.toString();
         }
     }
 
@@ -555,31 +539,13 @@ public class ConsoleGestionMemoire extends Console {
      * spécifiée en second argument.    
      */
     private void addition() {
-        // On vérifie d'abord qu'il y ait 2 arguments
-        if (!verificationNombreArgument("ADD")) {
-            return;
-        } // else le nombre d'argument est bon
-        
-        // On contrôle s'il n'y a qu'une zone mémoire ou une plage
-        this.controlePlageMemoire();
-        
-        /*
-         * On récupère le deuxième argument qui sera ajouté au contenu de la 
-         * zone s'il s'agit bien d'un double
-         */
-        String valeur = null; // Initialisation bidon
-        if (estUnDouble(this.getInstructions()[2])) {
-            // On contrôle si on peut enlevé la virgule s'il y en a une
-            valeur = estUnEntier(this.getInstructions()[2]) ? Integer.toString(
-                    (int) Double.parseDouble(this.getInstructions()[2])) 
-                    : this.getInstructions()[2];
-                    
-        } else {
-            // La valeur est mauvaise (2ème argument)
-            this.setLieuMauvaisArgument(2);
-            this.rechercheErreur(ERREUR_VALEUR_ARGUMENT);
-            return;
+        // On contrôle les arguments
+        if (!this.controleValiditeArgument("ADD")) {
+            return;     // Inutile de continuer
         }
+        
+        // On contrôle la valeur en l'arrondissant s'il s'agit d'un réel
+        this.controleValeur();
         
         // On garde une trace sur la console
         StringBuilder aRetourner = new StringBuilder("");
@@ -595,14 +561,14 @@ public class ConsoleGestionMemoire extends Console {
                     // On garde le résultat
                     String resultat = Double.toString(
                             Double.parseDouble(this.contenuZoneMemoire(i))
-                            + Double.parseDouble(valeur));
+                            + Double.parseDouble(this.aAffecter));
                     
                     // Comme c'est un double, on regarde si on peut enlevé la ,
                     this.getLaFenetre().getLaMemoire().affectationMemoire(i,
                             (estUnEntier(resultat) ? Integer.toString(
                             (int) Double.parseDouble(resultat)) : resultat));
                     
-                    aRetourner.append(valeur + " a été ajouté à "
+                    aRetourner.append(this.aAffecter + " a été ajouté à "
                             + tmpZone + ".\n");
                     
                 } else {
@@ -611,7 +577,7 @@ public class ConsoleGestionMemoire extends Console {
                             + " car elle n'est pas initialisée.\n");
                 }
             }
-            this.setaRetourner(aRetourner.toString());
+            this.aRetourner = aRetourner.toString();
         }
     }
 
@@ -620,31 +586,13 @@ public class ConsoleGestionMemoire extends Console {
      * spécifiée en second argument.    
      */
     private void multiplication() {
-        // On vérifie d'abord qu'il y ait 2 arguments
-        if (!verificationNombreArgument("MUL")) {
-            return;
-        } // else le nombre d'argument est bon
-        
-        // On contrôle s'il n'y a qu'une zone mémoire ou une plage
-        this.controlePlageMemoire();
-        
-        /*
-         * On récupère le deuxième argument qui sera multiplierpar le contenu de
-         * la zone s'il s'agit bien d'un double
-         */
-        String valeur = null; // Initialisation bidon
-        if (estUnDouble(this.getInstructions()[2])) {
-            // On contrôle si on peut enlevé la virgule s'il y en a une
-            valeur = estUnEntier(this.getInstructions()[2]) ? Integer.toString(
-                    (int) Double.parseDouble(this.getInstructions()[2])) 
-                    : this.getInstructions()[2];
-                    
-        } else {
-            // La valeur est mauvaise (2ème argument)
-            this.setLieuMauvaisArgument(2);
-            this.rechercheErreur(ERREUR_VALEUR_ARGUMENT);
-            return;
+        // On contrôle les arguments
+        if (!this.controleValiditeArgument("MUL")) {
+            return;     // Inutile de continuer
         }
+        
+        // On contrôle la valeur en l'arrondissant s'il s'agit d'un réel
+        this.controleValeur();
         
         // On garde une trace sur la console
         StringBuilder aRetourner = new StringBuilder("");
@@ -660,7 +608,7 @@ public class ConsoleGestionMemoire extends Console {
                     // On garde le résultat
                     String resultat = Double.toString(
                             Double.parseDouble(this.contenuZoneMemoire(i))
-                            * Double.parseDouble(valeur));
+                            * Double.parseDouble(this.aAffecter));
                     
                     // Comme c'est un double, on regarde si on peut enlevé la ,
                     this.getLaFenetre().getLaMemoire().affectationMemoire(i,
@@ -668,7 +616,7 @@ public class ConsoleGestionMemoire extends Console {
                             (int) Double.parseDouble(resultat)) : resultat));
                     
                     aRetourner.append(tmpZone + " a été multipliée par "
-                            + valeur + ".\n");
+                            + this.aAffecter + ".\n");
                     
                 } else {
                     // La zone mémoire n'est pas initialisée
@@ -676,7 +624,7 @@ public class ConsoleGestionMemoire extends Console {
                             + " car elle n'est pas initialisée.\n");
                 }
             }
-            this.setaRetourner(aRetourner.toString());
+            this.aRetourner = aRetourner.toString();
         }
     }
 
@@ -685,31 +633,13 @@ public class ConsoleGestionMemoire extends Console {
      * puissance spécifiée en second argument. 
      */
     private void exposant() {
-        // On vérifie d'abord qu'il y ait 2 arguments
-        if (!verificationNombreArgument("EXP")) {
-            return;
-        } // else le nombre d'argument est bon
-        
-        // On contrôle s'il n'y a qu'une zone mémoire ou une plage
-        this.controlePlageMemoire();
-        
-        /*
-         * On récupère le deuxième argument qui sera l'exposant du contenu de
-         * la zone s'il s'agit bien d'un double
-         */
-        String valeur = null; // Initialisation bidon
-        if (estUnDouble(this.getInstructions()[2])) {
-            // On contrôle si on peut enlevé la virgule s'il y en a une
-            valeur = estUnEntier(this.getInstructions()[2]) ? Integer.toString(
-                    (int) Double.parseDouble(this.getInstructions()[2])) 
-                    : this.getInstructions()[2];
-                    
-        } else {
-            // La valeur est mauvaise (2ème argument)
-            this.setLieuMauvaisArgument(2);
-            this.rechercheErreur(ERREUR_VALEUR_ARGUMENT);
-            return;
+        // On contrôle les arguments
+        if (!this.controleValiditeArgument("EXP")) {
+            return;     // Inutile de continuer
         }
+        
+        // On contrôle la valeur en l'arrondissant s'il s'agit d'un réel
+        this.controleValeur();
         
         // On garde une trace sur la console
         StringBuilder aRetourner = new StringBuilder("");
@@ -725,7 +655,7 @@ public class ConsoleGestionMemoire extends Console {
                     // On garde le résultat
                     String resultat = Double.toString(Math.pow(
                             Double.parseDouble(this.contenuZoneMemoire(i)),
-                            Double.parseDouble(valeur)));
+                            Double.parseDouble(this.aAffecter)));
                     
                     // Comme c'est un double, on regarde si on peut enlevé la ,
                     this.getLaFenetre().getLaMemoire().affectationMemoire(i,
@@ -733,7 +663,7 @@ public class ConsoleGestionMemoire extends Console {
                             (int) Double.parseDouble(resultat)) : resultat));
                     
                     aRetourner.append(tmpZone + " a été élevée à la puissance  "
-                            + valeur + ".\n");
+                            + this.aAffecter + ".\n");
                     
                 } else {
                     // La zone mémoire n'est pas initialisée
@@ -741,8 +671,19 @@ public class ConsoleGestionMemoire extends Console {
                             + " car elle n'est pas initialisée.\n");
                 }
             }
-            this.setaRetourner(aRetourner.toString());
+            this.aRetourner = aRetourner.toString();
         }
+    }
+    
+    /**
+     * Contrôle si une commande a un bon nombre d'arguments et si ces éventuels
+     * arguments sont corrects.
+     * @param aControler Commande valide à contrôler
+     * @return true si le contrôle s'est bien passé, false sinon
+     */
+    protected boolean controleValiditeArgument(String aControler) {
+        return this.verificationNombreArgument(aControler)
+                && this.controlePlageMemoire();
     }
     
     /**
@@ -750,13 +691,35 @@ public class ConsoleGestionMemoire extends Console {
      * @param commande Commande à vérifier
      * @return true si le nombre d'arguments de la commande est bon, false sinon
      */
-    public boolean verificationNombreArgument(String commande) {
-        if (!argumentsCommandeAttendus(commande)) {
-            this.setLieuMauvaisArgument(this.getInstructions().length);
-            this.rechercheErreur(ERREUR_NB_ARGUMENTS);
+    protected boolean verificationNombreArgument(String commande) {
+        if (!this.argumentsCommandeAttendus(commande)) {
+            this.lieuMauvaisArgument = this.instructions.length;
+            this.rechercheErreur(ERREUR_NB_ARGUMENT);
             return false;
         }    
         return true;
+    }
+    
+    /** 
+     * Vérifie la validité d'une valeur à affecter et l'arrondi si la valeur
+     * est juste.
+     */
+    protected void controleValeur() {
+        
+        if (estUnDouble(this.aAffecter)) {
+            // On contrôle si on peut enlever la virgule s'il y en a une
+            this.aAffecter = estUnEntier(this.aAffecter) ? Integer.toString(
+                    (int) Double.parseDouble(this.aAffecter))
+                    // On tente d'arrondir le réel
+                    : this.getARRONDIR().format(
+                            Double.parseDouble(this.aAffecter));
+                    
+        } else {
+            // La valeur est mauvaise (dernier argument)
+            this.lieuMauvaisArgument = this.instructions.length - 1;
+            this.rechercheErreur(ERREUR_VALEUR_ARGUMENT);
+            return;
+        }
     }
 
     /**
@@ -765,35 +728,72 @@ public class ConsoleGestionMemoire extends Console {
      * (ex : A..Z). Si c'est le cas, sauvegarde dans le tableau plageMemoire 
      * sous la forme des indices le début et la fin de la plage, sinon déclenche
      * une erreur
+     * @return true si le contrôle s'est bien passé, false sinon
      */
-    public void controlePlageMemoire() {
+    protected boolean controlePlageMemoire() {
         
-        if (this.getInstructions().length == 1) {
-            // On l'applique sur toutes les mémoires
+        if (this.instructions.length == 1) {
+            /*
+             * Il s'agit d'une commande prenant 0 ou 1 argument. Donc s'il n'y
+             * a pas d'argument, la commande s'applique à toutes les zones
+             * mémoires.
+             */
             this.plageMemoire = new int[]{0,25};
-
-        } else if (this.getInstructions()[1].length() == 1 && // Une lettre
-                estUneMemoire(this.getInstructions()[1])) {
-            // La plage commence et fini au même endroit
-            this.plageMemoire = new int[]{
-                    this.getInstructions()[1].charAt(0) - 65,
-                    this.getInstructions()[1].charAt(0) - 65};
-
-        } else if (this.getInstructions()[1].length() == 4 &&
-                estUnePlageCorrecte(this.getInstructions()[1]) == 0) {
-            // 4 comme le nombre de caractères d'un plage (ex : A..Z)
-            this.plageMemoire = new int[]{
-                    this.getInstructions()[1].charAt(0) - 65,
-                    this.getInstructions()[1].charAt(3) - 65};
+            
+        } else if (estUneMemoire(this.instructions[1])
+                || estUnePlageCorrecte(this.instructions[1]) == 0) {
+            
+            if (estUneMemoire(this.instructions[1])) {
+                // La plage commence et fini au même endroit
+                this.plageMemoire = new int[]{
+                        this.instructions[1].charAt(0) - 65,
+                        this.instructions[1].charAt(0) - 65};
+            } else {
+                // On marque le début et la fin de la plage
+                this.plageMemoire = new int[]{
+                        this.instructions[1].charAt(0) - 65,
+                        this.instructions[1].charAt(3) - 65};
+            }
+            
+            // Si la commande demande une valeur en plus de la plage
+            if (this.nbArgumentsCommande().equals("1 ou 2")) {
+                
+                // Si la valeur est présente
+                if (this.instructions.length == 3) {
+                    this.aAffecter = this.instructions[2];
+                } else {
+                    /* 
+                     * Il n'y pas de valeur dans une commande qui en demande 
+                     * une, donc on déclenche une erreur
+                     */
+                    this.lieuMauvaisArgument = 2;
+                    this.rechercheErreur(ERREUR_VALEUR_ABSENTE);
+                    return false;
+                }
+            }
+            
+        } else if (this.nbArgumentsCommande().equals("1 ou 2")
+                && estUnDouble(this.instructions[1])) {
+            /*
+             * Il n'y a pas de plages mémoires spécifiées dans une commande
+             * prenant une plage et un réel en argument. Donc, on l'applique à
+             * toutes les cellules et on récupère le contenu du premier argument
+             */
+            this.plageMemoire = new int[]{0,25};
+            this.aAffecter = this.instructions[1]; 
 
         } else { // Erreur dans la plage mémoire
-            this.setLieuMauvaisArgument(1);
-            if (estUnePlageCorrecte(this.getInstructions()[1]) == 2) {
-                this.rechercheErreur(ERREUR_ORDRE_PLAGE_MEMOIRES);
+            this.erreurTrouvee = true;
+            this.lieuMauvaisArgument = 1;
+            if (estUnePlageCorrecte(this.instructions[1]) == 2) {
+                this.rechercheErreur(ERREUR_ORDRE_PLAGE_MEMOIRE);
             } else {
-                this.rechercheErreur(ERREUR_PLAGE_MEMOIRES);
+                this.rechercheErreur(ERREUR_PLAGE_MEMOIRE);
             }
+            return false;
         }
+        
+        return true; // Le contrôle s'est bien passé
     }
 
     /**
@@ -802,7 +802,7 @@ public class ConsoleGestionMemoire extends Console {
      * @param commande Commande dont on veut connaitre le nombre d'argument
      * @return true si le nombre d'argument est juste, false sinon
      */
-    public boolean argumentsCommandeAttendus(String commande) {
+    protected boolean argumentsCommandeAttendus(String commande) {
         
         switch (commande.toString()) {
         case "RAZ" :
@@ -813,13 +813,14 @@ public class ConsoleGestionMemoire extends Console {
         case "SQRT" :
         case "CAR" :
             // La commande et la zone
-            return this.getInstructions().length <= 2;
+            return this.instructions.length <= 2;
         case "INIT" :       
         case "ADD" :
         case "MUL" :
         case "EXP" :
-            // La commande, la plage mémoire et la valeur
-            return this.getInstructions().length == 3;
+            // La commande, la plage mémoire (optionnel) et la valeur
+            return this.instructions.length == 2 
+                    || this.instructions.length == 3;
         }
         
         throw new IllegalArgumentException("Passage impossible");
@@ -829,9 +830,9 @@ public class ConsoleGestionMemoire extends Console {
      * @return Chaine de caractères représenatnt le nombre d'arguments
      *          attendus pour la commande saisie par l'utilisateur
      */
-    public String nbArgumentsCommande() {
+    protected String nbArgumentsCommande() {
         
-        switch (this.getInstructions()[0].toString()) {
+        switch (this.instructions[0].toString()) {
         case "RAZ" :
         case "INCR" :
         case "SOM" :
@@ -845,10 +846,9 @@ public class ConsoleGestionMemoire extends Console {
         case "ADD" :
         case "MUL" :
         case "EXP" :
-            // La commande, la plage mémoire et la valeur
-            return "2";
+            // La commande, la plage mémoire (optionel) et la valeur
+            return "1 ou 2";
         }
-        
         throw new IllegalArgumentException("Passage impossible");
     }
 
@@ -856,7 +856,7 @@ public class ConsoleGestionMemoire extends Console {
      * Controle si une chaine de 4 caractères est une plage mémoire avec des
      * bornes dans le bon ordre
      * @param aTester Chaine à tester
-     * @return 0 si la chine est bien une plage mémoire
+     * @return 0 si la chaine est bien une plage mémoire
      *         1 si le format n'est pas bon
      *         2 si le format est bon mais les bornes ne sont pas bonnes
      */
@@ -884,21 +884,31 @@ public class ConsoleGestionMemoire extends Console {
     }
     
     /**
-     * Teste si le contenu d'une zone mémoire initialisée est positif
-     * @param aTester Chaine à tester qui doit être une zone mémoire
-     * @return true si la zone mémoire est initialisée, false sinon
+     * Teste si le contenu d'une mémoire est positif
+     * @param memoireATester Chaine représentant une mémoire
+     * @return true si son contenu est positif, false sinon
      */
-    private boolean estPositif(String aTester) {
-        return this.getLaFenetre().getLaMemoire().getContenuZones()
-                [aTester.charAt(0) - 65].getText().charAt(0) != '-';
+    private boolean contenuMemoirePositif(String memoireATester) {
+        return estPositif(this.getLaFenetre().getLaMemoire().getContenuZones()
+                [memoireATester.charAt(0) - 65].getText());
     }
-
+    
     /* (non-Javadoc)
      * @see minicalcul.programme.commandes.Console
      *                  #estUneMemoire(java.lang.String)
      */
     @Override
-    public boolean estUneMemoire(String aTester) {
+    protected boolean estUneMemoire(String aTester) {
         return Pattern.compile(REGEX_ZONE_MEMOIRE).matcher(aTester).matches();
+    }
+    
+    /* (non-Javadoc)
+     * @see minicalcul.programme.commandes.Console
+     *                  #estInitialisee(java.lang.String)
+     */
+    @Override
+    protected boolean estInitialisee(String aTester) {
+        return !this.getLaFenetre().getLaMemoire()
+                .getContenuZones()[aTester.charAt(0) - 65].getText().equals("");
     }
 }

@@ -1,6 +1,6 @@
 /* 
  * Tableur.java                            17 avr. 2015
- * IUT info1 Groupe 3 2014-2015
+ * IUT INFO1 Projet S2 2014-2015
  */
 package minicalcul.programme.tableur;
 
@@ -62,9 +62,8 @@ public class Tableur {
      */
     public boolean celluleInitialisee(String aTester) {
         int[] coordonnees = conversionChaineEnCoordonnees(aTester);
-        
+
         return this.grilleTableur.estInitialisee(coordonnees);
-        
     }
     
     /**
@@ -85,15 +84,46 @@ public class Tableur {
     }
 
     /**
-     * Restaure le contenu d'une cellule à partir de ces coordonnées
+     * Restaure le contenu brut d'une cellule à partir de ses coordonnées
      * @param cellule Coordonnées de la cellule
      * @return Valeur de la cellule en chaine de caractère
      */
-    public String restaurationCellule(String cellule) {
+    public String restaurationValeurCellule(String cellule) {
         int[] coordonnees = conversionChaineEnCoordonnees(cellule);
         
         return this.grilleTableur.valeurCellule(coordonnees);
     }
+    
+    /**
+     * Restaure le contenu d'une cellule à partir de ses coordonnées
+     * @param cellule Coordonnées de la cellule
+     * @return Contenu de la cellule en chaine de caractère
+     */
+    public String restaurationContenuCellule(String cellule) {
+        int[] coordonnees = conversionChaineEnCoordonnees(cellule);
+        
+        String aRetourner =
+                this.cellules[coordonnees[0]][coordonnees[1]].isFormule() ?
+                // S'il y'a une formule
+                this.cellules[coordonnees[0]][coordonnees[1]].getContenu()
+                // Sinon on restaure la valeur brute
+                : this.cellules[coordonnees[0]][coordonnees[1]].getValeur();
+
+        /*
+         * Si le contenu est une formule, il contient à la fin " = [cellule] "
+         * donc on l'enlève
+         */
+        if (this.cellules[coordonnees[0]][coordonnees[1]].isFormule()) {
+            for (int i = 0; i < aRetourner.length(); i++) {
+                if (aRetourner.charAt(i) == '=') {
+                    aRetourner = aRetourner.substring(0, i-1);
+                    break;
+                }
+            }
+        }
+        return aRetourner;
+    }
+    
     
     /**
      * Affecte à la cellule passée en argument, la valeur passée en argument
@@ -136,19 +166,19 @@ public class Tableur {
     public void reinitialisationCellule(String cellule) {
         int[] coordonnees = conversionChaineEnCoordonnees(cellule);
         
-        // La cellule ne contient pas de formule
+        // La cellule ne contient pas de formule (programme)
         this.cellules[coordonnees[0]][coordonnees[1]].setFormule(false);
         
         // On enlève la formule si elle en contenait une
         this.cellules[coordonnees[0]][coordonnees[1]].setContenu(null);
         
-        // On vide la cellule
+        // On vide la cellule (interface)
         this.grilleTableur.miseAJourValeur(coordonnees, null);
     }
 
     /**
      * Convertit une cellule sous la forme de chaine de caractère (ex : A1) en
-     * coordonnées du tableur (ex : A1 --> [0,0] et Z20 --> [19,25]) 
+     * coordonnées du tableur (ex : A1 : [0,0] et Z20 : [19,25]) 
      * @param aConvertir Chaine à convertir
      * @return Tableau de coordonnées de la cellule
      */
@@ -156,7 +186,6 @@ public class Tableur {
     public int[] conversionChaineEnCoordonnees(String aConvertir) {
         
         int[] aRetourner = new int[2];
-        
         // On récupère l'indice du chiffre et on enleve 1
         aRetourner[0] = (aConvertir.length() == 2 
                 ? Integer.parseInt(aConvertir.substring(1, 2))
@@ -205,7 +234,7 @@ public class Tableur {
     }
 
     /**
-     * Va chercher la représentattion en chaine de caractères de la cellule dont
+     * Va chercher la représentation en chaine de caractères de la cellule dont
      * les coordonnées ont été passées en argument
      * @param coordonnees Coordonnées de la cellule à rechercher
      * @return Représentation en chaine de caractère de la cellule
