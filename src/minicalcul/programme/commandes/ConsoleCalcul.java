@@ -45,7 +45,7 @@ public interface ConsoleCalcul {
     public int separationElementsExpression(int position);
 
     /**
-     * Vérifie le format de la chaine selon le tableau de vérité ainsi que le
+     * Vérifie le format de la chaîne selon le tableau de vérité ainsi que le
      * nombre de parenthèses ouvrantes et fermantes qui doit être équivalent.
      * S'il y a un problème, une erreur est déclenchée.
      * @return true si le format est bon, false sinon
@@ -69,16 +69,16 @@ public interface ConsoleCalcul {
 
     /**
      * Vérifie si l'affectation d'un nombre dans une zone mémoire ou cellule
-     * est correcte. On suppose qu'il n'y a qu'un seul = dans l'expression. 
+     * est correcte. On suppose qu'il n'y a qu'un seul '=' dans l'expression. 
      * Ensuite on garde la zone affectée (ou la cellule).
      * @return true si l'affectation est possible, false sinon
      */
     public boolean affectationCorrecte();
     
     /**
-     * Teste si une chaine est un élément d'une opération (réel, opérateur,
+     * Teste si une chaîne est un élément d'une opération (réel, opérateur,
      * mémoire ou parenthèse)
-     * @param aTester Chaine à tester
+     * @param aTester Chaîne à tester
      * @return true s'il s'agit d'un élément, false sinon
      */
     public boolean estUneSousChaine(String aTester);
@@ -90,17 +90,18 @@ public interface ConsoleCalcul {
     public void calculExpressionParenthese();
 
     /**
-     * Calcule l'expression simple (sans parenthèse) délimitée par le chiffre du
-     * début, et le chiffre de la fin et retourne le résultat dans une chaine.
-     * @param debut Indice de début de la sous chaine à calculer
-     * @param fin Indice de fin de la sous chaine à calculer
+     * Calcule l'expression simple (sans parenthèses) délimitée par le chiffre 
+     * du début, et le chiffre de la fin et retourne le résultat dans une 
+     * chaîne.
+     * @param debut Indice de début de la sous-chaîne à calculer
+     * @param fin Indice de fin de la sous-chaîne à calculer
      */
     public void calculExpressionSimple(int debut, int fin);
 
     /**
      * Effectue l'opération passée en argument aux opérandes situées avant
      * et après la position de l'opérateur. Lorsque cela est fait, on met le
-     * résultat dans l'opérande situé à gauche de l'opérateur et on décale 
+     * résultat dans l'opérande située à gauche de l'opérateur et on décale 
      * l'expression de 2 cases.
      * @param operation Opération à effectuer
      *          - 0 : Division
@@ -118,8 +119,8 @@ public interface ConsoleCalcul {
     public void decalage(int position);
    
     /**
-     * Recherche le nombre de = dans une expression
-     * @return le nombre de = dans une expression
+     * Recherche le nombre de '=' dans une expression
+     * @return le nombre de '=' dans une expression
      */
     public int nombreEgalExpression();
 

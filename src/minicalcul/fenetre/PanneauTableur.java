@@ -27,17 +27,17 @@ public class PanneauTableur extends JPanel {
     /** Panneau permettant de rajouter un scroll au tableur */
     private JScrollPane scrollPane;
     
-    /** Première colone du tableau qui reste figée */
-    private JPanel premiereColone;
+    /** Première colonne du tableau qui reste figée */
+    private JPanel premiereColonne;
     
     /** Tableau d'affichage du tableur */
     private JPanel tableau;
 
-    /** Labels d'affichage des chiffres dans la première colone */
+    /** Labels d'affichage des chiffres dans la première colonne */
     private JLabel[] lignes;
 
     /** Labels d'affichage des lettres dans la première ligne */
-    private JLabel[] colones;
+    private JLabel[] colonnes;
     
     /** Grille correspondant aux cellules du tableur */
     private GrilleCellules grilleTableur;
@@ -50,9 +50,9 @@ public class PanneauTableur extends JPanel {
         
         // Création des headers du tableur (on ajoute 1 pour les headers)
         this.lignes = new JLabel[21]; 
-        this.colones = new JLabel[26];
+        this.colonnes = new JLabel[26];
                 
-        this.creationPremiereColone();
+        this.creationPremiereColonne();
 
         // On va créer le tableur ligne par ligne en commancant par le header
         this.creationTableur();
@@ -60,22 +60,22 @@ public class PanneauTableur extends JPanel {
     }
 
     /**
-     * Créé la première colone du tableur contenant les chiffres de 1 à 20
+     * Créé la première colonne du tableur contenant les chiffres de 1 à 20
      */
-    private void creationPremiereColone() {
+    private void creationPremiereColonne() {
 
         // Construction du panneau disposé dans une grille
-        this.premiereColone = new JPanel(new GridLayout(20,1));
-        this.premiereColone.setBounds(20, 34, 35, 491); // Taille et position
+        this.premiereColonne = new JPanel(new GridLayout(20,1));
+        this.premiereColonne.setBounds(20, 34, 35, 491); // Taille et position
         
         for (int i = 0; i < this.lignes.length - 1; i++) {
             this.lignes[i] = new JLabel(Integer.toString(i + 1), JLabel.CENTER);
             this.lignes[i].setBorder(
                     BorderFactory.createLineBorder(Color.GRAY));
-            this.premiereColone.add(this.lignes[i]);
+            this.premiereColonne.add(this.lignes[i]);
         }
 
-        this.add(this.premiereColone);
+        this.add(this.premiereColonne);
     }
 
     /**
@@ -97,12 +97,12 @@ public class PanneauTableur extends JPanel {
         char tmp = 65; // A = 65 .. Z = 90
 
         // Première ligne contenant toutes les lettres de l'alphabet
-        for (int i = 0; i < this.colones.length; i++) {
+        for (int i = 0; i < this.colonnes.length; i++) {
             Character nom = new Character(tmp);
-            this.colones[i] = new JLabel(nom.toString(), JLabel.CENTER);
-            this.colones[i].setBorder(
+            this.colonnes[i] = new JLabel(nom.toString(), JLabel.CENTER);
+            this.colonnes[i].setBorder(
                     BorderFactory.createLineBorder(Color.GRAY));
-            this.tableau.add(this.colones[i]);
+            this.tableau.add(this.colonnes[i]);
             tmp++;
         }     
         
@@ -114,7 +114,7 @@ public class PanneauTableur extends JPanel {
         for (int i = 0; i < this.lignes.length - 1; i++) {
             
             // On créé chaque cellule de la ligne
-            for (int j = 0; j < this.colones.length; j++) {
+            for (int j = 0; j < this.colonnes.length; j++) {
                 this.grilleTableur.constructionCellule(i,j);
                 this.tableau.add(this.grilleTableur.getTableau()[i][j]);   
             }
@@ -122,7 +122,7 @@ public class PanneauTableur extends JPanel {
     }
 
     /**
-     * Acceseur à grilleTableur
+     * Accesseur à grilleTableur
      * @return grilleTableur 
      */
     public GrilleCellules getGrilleTableur() {

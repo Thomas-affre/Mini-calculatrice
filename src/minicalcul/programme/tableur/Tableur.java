@@ -8,9 +8,12 @@ import minicalcul.fenetre.GrilleCellules;
 import minicalcul.programme.commandes.ConsoleCalculTableur;
 
 /**
- * Groupe de cellules formant un tableur
+ * Regroupement de cellules formant un tableur
+ * @author Thomas Affre
+ * @author Thibaut Méjane
+ * @author Florian Louargant
  * @author Clément Zeghmati
- * @version 0.1
+ * @version 1.1
  */
 public class Tableur {
     
@@ -48,7 +51,8 @@ public class Tableur {
 
             for (int j = 0; j < this.cellules[i].length; j++) {
                 String lettre = new Character((char) (j + 65)).toString();
-
+                // identification de la cellule au format : 
+                // lettre + (numéro de la cellule+1)    
                 this.cellules[i][j] = new Cellule(
                         lettre + Integer.toString(i+1), this);
             }
@@ -150,13 +154,13 @@ public class Tableur {
      * @param formule Formule que l'on va affecter à la cellule
      */
     public void affectationFormule(String cellule, String formule) {
-        int[] coordonnes = conversionChaineEnCoordonnees(cellule);
+        int[] coordonnees = conversionChaineEnCoordonnees(cellule);
 
         // La cellule contient désormais une formule
-        this.cellules[coordonnes[0]][coordonnes[1]].setFormule(true);
+        this.cellules[coordonnees[0]][coordonnees[1]].setFormule(true);
         
         // On lui donne la formule
-        this.cellules[coordonnes[0]][coordonnes[1]].setContenu(formule);
+        this.cellules[coordonnees[0]][coordonnees[1]].setContenu(formule);
     }
 
     /**
@@ -177,7 +181,7 @@ public class Tableur {
     }
 
     /**
-     * Convertit une cellule sous la forme de chaine de caractère (ex : A1) en
+     * Convertit une cellule sous la forme de chaine de caractères (ex : A1) en
      * coordonnées du tableur (ex : A1 : [0,0] et Z20 : [19,25]) 
      * @param aConvertir Chaine à convertir
      * @return Tableau de coordonnées de la cellule
@@ -186,12 +190,12 @@ public class Tableur {
     public int[] conversionChaineEnCoordonnees(String aConvertir) {
         
         int[] aRetourner = new int[2];
-        // On récupère l'indice du chiffre et on enleve 1
+        // On récupère l'indice du chiffre et on enlève 1
         aRetourner[0] = (aConvertir.length() == 2 
                 ? Integer.parseInt(aConvertir.substring(1, 2))
                 : Integer.parseInt(aConvertir.substring(1, 3))) - 1;  
         
-        // On recupere l'indice correspondant à la lettre A=65..Z=90
+        // On récupère l'indice correspondant à la lettre A=65..Z=90
         aRetourner[1] = new Character(aConvertir.charAt(0)).hashCode() - 65;
         
         return aRetourner;
@@ -200,7 +204,7 @@ public class Tableur {
     /**
      * Convertit les coordonnées d'une cellule en chaine de caractères
      * @param coordonnees Coordonnées de la cellule à convertir
-     * @return Chaine de caractère représentant la cellule (ex : A1)
+     * @return Chaine de caractères représentant la cellule (ex : A1)
      */
     @SuppressWarnings("static-method")
     public String conversionCoordonneesEnChaine(int[] coordonnees) {
@@ -225,10 +229,10 @@ public class Tableur {
         int[][] aRetourner = new int[2][];
         
         // On découpe la plage
-        String[] coordonnes = plage.split("\\."); // resultat : [debut, , fin]
+        String[] coordonnees = plage.split("\\."); // resultat : [debut, , fin]
         
-        aRetourner[0] = conversionChaineEnCoordonnees(coordonnes[0]); // debut
-        aRetourner[1] = conversionChaineEnCoordonnees(coordonnes[2]); // fin
+        aRetourner[0] = conversionChaineEnCoordonnees(coordonnees[0]); // debut
+        aRetourner[1] = conversionChaineEnCoordonnees(coordonnees[2]); // fin
         
         return aRetourner;
     }
@@ -245,10 +249,10 @@ public class Tableur {
     }
     
     /**
-     * Sauvegarde les cellules dans un tableau à deux dimension de String et le
-     * renvoie. La première dimension correspond à une cellule. Dans la deuxième
+     * Sauvegarde les cellules dans un tableau à deux dimensions de String et le
+     * renvois. La première dimension correspond à une cellule. Dans la deuxième
      * dimension, on trouve : 
-     *          0 : coordonnée en chaine
+     *          0 : les coordonnées sous forme de chaine
      *          1 : contenu brut de la cellule
      *          2 : formule. null s'il n'y en a pas
      * @return tableau de sauvegarde des cellules
@@ -294,7 +298,7 @@ public class Tableur {
     }
 
     /**
-     * Acceseur à cellules
+     * Accesseur à cellules
      * @return cellules 
      */
     public Cellule[][] getCellules() {
@@ -302,7 +306,7 @@ public class Tableur {
     }
 
     /**
-     * Acceseur à grilleTableur
+     * Accesseur à grilleTableur
      * @return grilleTableur 
      */
     public GrilleCellules getGrilleTableur() {

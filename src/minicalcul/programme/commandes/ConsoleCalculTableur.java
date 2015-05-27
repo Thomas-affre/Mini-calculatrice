@@ -59,7 +59,7 @@ public class ConsoleCalculTableur extends ConsoleCalculSimple {
         super.reinitialisation();
 
         /*
-         * On découpe la chaine avec les espaces en conservant l'originale et
+         * On découpe la chaîne avec les espaces en conservant l'originale et
          * en enlevant les espaces multiples.
          */
         this.commande = commande.replace("  ", "");
@@ -97,7 +97,7 @@ public class ConsoleCalculTableur extends ConsoleCalculSimple {
      */
     @Override
     public void controleCommande() {
-        // On vérifie la syntaxe des sous-chaines 
+        // On vérifie la syntaxe des sous-chaînes 
         if (!super.verificationSyntaxe()) {
             
             /*
@@ -107,19 +107,19 @@ public class ConsoleCalculTableur extends ConsoleCalculSimple {
             this.rechercheErreur(ERREUR_SYNTAXE);
         }
         
-        // Pour traiter la commande on enlève les éventuels $
+        // Pour traiter la commande on enlève les éventuels '$'
         for (int i = 0; i < this.instructions.length; i++) {
             if (this.estUneMemoire(this.instructions[i])) {
                 this.instructions[i] = this.instructions[i].replace("$", "");
             }
         }
                                 
-        // On vérifie le format de la chaine s'il n'y a pas eu d'erreur avant
+        // On vérifie le format de la chaîne s'il n'y a pas eu d'erreur avant
         if (!this.erreurTrouvee) {
             super.verificationFormat();
         }
         
-        // Le nombre d'= doit être égal à 1 car il doit y avoir une affectation.
+        // Le nombre d''=' doit être égal à 1 car il doit y avoir une affectation.
         if (!this.erreurTrouvee) {
             this.verificationAffectation();
         }
@@ -152,10 +152,22 @@ public class ConsoleCalculTableur extends ConsoleCalculSimple {
 
         // On arrondit le résultat
         super.arrondissementResultat();
+        
+        
+        try {
+            // On vérifie les erreurs mathématiques (division par 0)
+            Double.isInfinite(Double.parseDouble(this.instructions[0]));
+            
+            // On affecte le résultat à la cellule
+            this.leTableur.affectationValeur(
+                    this.zoneAffecte, this.instructions[0]);
 
-        // On affecte le résultat à la cellule
-        this.leTableur.affectationValeur(
-                this.zoneAffecte, this.instructions[0]);
+        } catch (NumberFormatException e) {
+            // Conversion impossible
+            this.lieuMauvaisArgument = this.instructions.length - 3;
+            this.rechercheErreur(ERREUR_MATHEMATIQUE);
+        }
+
     }
 
     /* (non-Javadoc)
@@ -167,7 +179,7 @@ public class ConsoleCalculTableur extends ConsoleCalculSimple {
         this.erreurTrouvee = true; // Erreur déclenchée
         StringBuilder tmpARetourner = new StringBuilder("  ");
 
-        // On recherche la position de l'erreur dans la chaine originale
+        // On recherche la position de l'erreur dans la chaîne originale
         for (int i = 0; i < this.commande.length()
                 && posErreur < this.lieuMauvaisArgument; i++) {
             if (this.commande.charAt(i) == ' ') {
@@ -222,6 +234,10 @@ public class ConsoleCalculTableur extends ConsoleCalculSimple {
             this.aRetourner = tmpARetourner.append(
                     MSG_OPERATION_APRES_EGAL).toString();
             break;
+        case ERREUR_MATHEMATIQUE : 
+            this.aRetourner = tmpARetourner.append(
+                    MSG_PROBLEME_MATHEMATIQUE).toString();
+            break;
         }            
     }
          
@@ -231,10 +247,10 @@ public class ConsoleCalculTableur extends ConsoleCalculSimple {
      */
     @Override
     public boolean verificationAffectation() {
-        // On récupère le nombre d'= dans l'expression
+        // On récupère le nombre d''=' dans l'expression
         int compteur = super.nombreEgalExpression();
         
-        // On contrôle qu'il y ait un égale et que l'affectation soit correcte
+        // On contrôle qu'il y ait un égal et que l'affectation soit correcte
         if (compteur == 1 && super.affectationCorrecte()) {
             return true;
         } // else mauvaise affectation
@@ -280,7 +296,7 @@ public class ConsoleCalculTableur extends ConsoleCalculSimple {
          */
         boolean restauration = false;
                 
-        // On peut s'arrêter de rechercher lorsqu'on rencontre un =
+        // On peut s'arrêter de rechercher lorsqu'on rencontre un '='
         for (int i = 0; i < this.instructions.length
                 && !this.instructions[i].equals("="); i++) {
             
@@ -295,9 +311,9 @@ public class ConsoleCalculTableur extends ConsoleCalculSimple {
 
                     this.lieuMauvaisArgument = i;
                     /*
-                     * On remplit la cellule avec un ? afin de le spécifier que
-                     * l'affectation est impossible. On le signale également à
-                     * l'utilisateur  
+                     * On remplit la cellule avec un '?' afin de spécifier que 
+                     * l'affectation est impossible. On le signale également
+                     * à l'utilisateur.
                      */
                     this.leTableur.affectationFormule(
                             this.zoneAffecte, this.commande);

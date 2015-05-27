@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
- * Panneau des zones mémoires
+ * Panneau des zones mémoire
  * @author Thomas Affre
  * @author Thibaut Méjane
  * @author Florian Louargant
@@ -31,14 +31,14 @@ public class PanneauZones extends JPanel {
     /** Paire label/textfield pour le contenu de la zone mémoire */
     private JPanel[] paireNomZone;
     
-    /** Nom des zones mémoires */
+    /** Nom des zones mémoire */
     private JLabel[] nomsZones;
     
-    /** Contenu des zones mémoires */
+    /** Contenu des zones mémoire */
     private JTextField[] contenuZones;
         
     /**
-     * Constructeur du panneau des zones mémoires
+     * Constructeur du panneau des zones mémoire
      */
     public PanneauZones() {
         this.setLayout(null);
@@ -48,7 +48,7 @@ public class PanneauZones extends JPanel {
     }
 
     /**
-     * Constuit le tableau des zones mémoires
+     * Constuit le tableau des zones mémoire
      */
     private void creationZonesMemoire() {
         // Construction du tableau dans une grille
@@ -82,7 +82,7 @@ public class PanneauZones extends JPanel {
                     BorderFactory.createLineBorder(Color.GRAY));
             this.paireNomZone[i].add(this.contenuZones[i], BorderLayout.CENTER); 
             
-            // AJout de la paire au panel
+            // Ajout de la paire au panel
             this.zonesMemoire.add(this.paireNomZone[i]);
         }
         this.add(this.zonesMemoire);
@@ -119,7 +119,7 @@ public class PanneauZones extends JPanel {
     }
 
     /**
-     * Acceseur à contenuZones
+     * Accesseur à contenuZones
      * @return contenuZones 
      */
     public JTextField[] getContenuZones() {

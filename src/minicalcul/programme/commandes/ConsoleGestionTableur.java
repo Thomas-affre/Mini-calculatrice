@@ -39,7 +39,7 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
             + "\n\tou de toutes si aucune plage n'est précisée, avec la valeur "
             + "\n\tmise en deuxième argument.\n\n"
             + " - FORM {Ligne ou colonne de cellules}\n"
-            + "\tDemande à l'utilisateur via une boite de dialogue de saisir "
+            + "\tDemande à l'utilisateur via une boîte de dialogue de saisir "
             + "\n\tla formule à appliquer sur la plage de cellule. Cette "
             + "\n\tcommande prend en compte l'utilisation des blocages ($)"
             + "\n\tde cellules.\n\n"
@@ -70,14 +70,14 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
             + "syntaxe : cet argument n'est pas une cellule ou une plage "
             + "de cellules.";
     
-    /** Message affiché lorsque une plage de cellules n'est pas rengée */
+    /** Message affiché lorsque une plage de cellules n'est pas rangée */
     protected static final String MSG_PLAGE_MEMOIRE_NON_ORDONNEE = "Erreur "
             + "de syntaxe : les bornes de la plage de cellules "
             + "doivent être rangées dans l'ordre.";
     
     /** Message affiché à cause d'un problème de dimensions lors d'une copie */
     protected static final Object MSG_MAUVAISE_DIMENSION = "Erreur de "
-            + "dimensions : la dimensions de la plage source doit être plus "
+            + "dimensions : la dimension de la plage source doit être plus "
             + "petite que la plage destination.";
 
     /** Message affiché lorsqu'un cellule n'est pas initialisée (copie) */
@@ -102,7 +102,7 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
     public static final String[] COMMANDES =
         {"CONT", "INIT", "FORM", "COPIER", "COPVAL", "RAZ", "AIDE"};
 
-    /** Référence au tableur afin de pouvoir intéragir avec */
+    /** Référence du tableur afin de pouvoir intéragir avec */
     private Tableur leTableur;
     
     /** 
@@ -145,7 +145,7 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
         // On commence par réinitialiser l'état de cette console
         this.reinitialisation();
 
-        // On découpe la chaine avec les espaces
+        // On découpe la chaîne avec les espaces
         this.commande = commande;
         this.instructions = commande.split(" ");
         
@@ -163,7 +163,7 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
         case "COPIER" : // Copie des cellules
             this.copier();
             break;
-        case "COPVAL" : // Copie la la valeur de la cellule
+        case "COPVAL" : // Copie la valeur de la cellule
             this.copierValeur();
             break;
         case "RAZ" : // Remise à zéro
@@ -254,7 +254,7 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
     
     /**
      * Affiche soit le contenu de toutes les cellules (sans arguments), soit le
-     * contenu des cellules spécifiées. C'est-à-dire valeur + éventuellement
+     * contenu des cellules spécifiées. C'est-à-dire valeur + éventuellement la
      * formule.
      */
     private void contenu() {
@@ -324,7 +324,7 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
                 for (int j = this.plageCellules[0][1];
                         j <= this.plageCellules[1][1]; j++) {
                     
-                    // On récupère les coordonnées en chaines
+                    // On récupère les coordonnées en chaînes
                     String tmpZone = this.leTableur.
                             conversionCoordonneesEnChaine(new int[]{i, j});
                     
@@ -351,7 +351,7 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
             return;     // Inutile de continuer
         } // else le nombre d'argument est bon    
                 
-        // On demande la formule dans une boite de dialogue
+        // On demande la formule dans une boîte de dialogue
         this.aAffecter = (String) JOptionPane.showInputDialog(
                 this.getLaFenetre(),
                 "Saisissez la formule à appliquer à la plage",
@@ -403,22 +403,22 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
          */
         this.aAffecter = this.leTableur.restaurationContenuCellule(premiere);
         
-        // Chaine qui contiendra la formule modifiée à affecter
+        // Chaîne qui contiendra la formule modifiée à affecter
         String nouvelleFormule;
         
         // On parcourt chaque ligne
         for (int i = this.plageCellules[0][0];
                 i <= this.plageCellules[1][0]; i++) {
 
-            // Puis chaque colone
+            // Puis chaque colonne
             for (int j = this.plageCellules[0][1];
                     j <= this.plageCellules[1][1]; j++) {
 
-                // On récupère les coordonnées d'insertions en chaines
+                // On récupère les coordonnées d'insertions en chaînes
                 String tmpZone = this.leTableur.
                         conversionCoordonneesEnChaine(new int[]{i, j});
                 
-                // On remplace les cellules non bloquée de la formule
+                // On remplace les cellules non bloquées de la formule
                 nouvelleFormule = this.modificationCellulesNonBloquee(premiere, 
                         tmpZone, this.aAffecter.split(" "));
                                 
@@ -434,15 +434,15 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
     }
 
     /**
-     * Copie la cellule ou de la plage du premier argument dans la
+     * Copie la cellule ou la plage du premier argument dans la
      * cellule ou la plage du deuxième à condition que les dimensions des deux
      * arguments soient bonnes. C'est-à-dire :
      *  - Si la source est une cellule, la cellule sera copier dans toutes les
-     *    cellules de la destination en faisant attention aux $ de blocage de
+     *    cellules de la destination en faisant attention aux '$' de blocage de
      *    cellules.
      *  - Si la source est une plage, la plage source sera copier dans une plage
      *    destination qui devra être au moins de la même taille en faisant 
-     *    attention aux $ de blocage de cellules.     
+     *    attention aux '$' de blocage de cellules.     
      */
     private void copier() {
         // On contrôle les arguments
@@ -475,6 +475,7 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
                 // On récupère le contenu de la cellule source
                 this.aAffecter = this.leTableur.restaurationContenuCellule(
                         this.instructions[1]);
+                System.out.println("contenu : " + aAffecter);
                 
                 // On l'affecte à toutes les cellules de la plage
                 for (int i = this.plageDestination[0][0];
@@ -483,18 +484,18 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
                     for (int j = this.plageDestination[0][1];
                             j <= this.plageDestination[1][1]; j++) {
                         
-                        // On récupère les coordonnées d'insertions en chaines
+                        // On récupère les coordonnées d'insertions en chaînes
                         String tmpZone = this.leTableur.
                                 conversionCoordonneesEnChaine(new int[]{i, j});
                         
                         // On modifie les cellules non bloquées de la formule
-                        this.aAffecter = modificationCellulesNonBloquee(
+                        String tmpFormule = modificationCellulesNonBloquee(
                                 this.instructions[1], tmpZone, 
                                 this.aAffecter.split(" "));
                         
                         // On effectue la commande
                         this.lesConsoles.getTableur().traitementCommande(
-                                this.aAffecter + " = " + this.leTableur.
+                                tmpFormule + " = " + this.leTableur.
                                 conversionCoordonneesEnChaine(new int[]{i,j}));
                     }
                 }
@@ -526,10 +527,10 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
                 }
             }
             
-            // On les affecte dans les nouvelles cellules
+            // On les affectes dans les nouvelles cellules
             for (int i = 0; i < aCopier.length; i++) {
                 for (int j = 0; j < aCopier[i].length; j++) {        
-                    // On récupère la cellule en chaine
+                    // On récupère la cellule en chaîne
                     String cellule = this.leTableur.
                             conversionCoordonneesEnChaine(new int[]{
                                     i + this.plageDestination[0][0],
@@ -649,7 +650,7 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
             // On les affecte dans les nouvelles cellules
             for (int i = 0; i < aCopier.length; i++) {
                 for (int j = 0; j < aCopier[i].length; j++) {        
-                    // On récupère la cellule en chaine
+                    // On récupère la cellule en chaîne
                     String cellule = this.leTableur.
                             conversionCoordonneesEnChaine(new int[]{
                                     i + this.plageDestination[0][0],
@@ -694,7 +695,7 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
                 for (int j = this.plageCellules[0][1];
                         j <= this.plageCellules[1][1]; j++) {
                     
-                    // On récupère les coordonnées en chaines
+                    // On récupère les coordonnées en chaînes
                     String tmpZone = this.leTableur.
                             conversionCoordonneesEnChaine(new int[]{i, j});
                     
@@ -896,8 +897,8 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
     }
     
     /**
-     * Teste si une chaine est une cellule ou une plage de celules
-     * @param memoire Chaine à convertir
+     * Teste si une chaîne est une cellule ou une plage de celules
+     * @param memoire Chaîne à convertir
      * @return plage de cellule en coordonnées s'il s'agit bien d'une cellule 
      *          ou d'une plage de celules, null sinon
      */
@@ -922,7 +923,7 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
      * @param origine Cellule d'origine de la formule
      * @param destination Cellule destination de la formule
      * @param formule Formule à modifier
-     * @return la formule modifiée en fonction des $ rencontrés ou non
+     * @return la formule modifiée en fonction des '$' rencontrés ou non
      */
     private String modificationCellulesNonBloquee(String origine,
             String destination, String[] formule) {
@@ -934,18 +935,19 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
                 destination.replace("$", ""));
 
         
-        int[] tmpNouvelle;  // Cellule temporaire lorsq'une sera modifiée
+        int[] tmpNouvelle;  // Cellule temporaire lorsque l'une d'elle sera 
+        					// modifiée
 
         // On parcourt la formule
         for (int i = 0; i < formule.length; i++) {
             // On tente une modification si on rencontre une cellule
             if (this.estUneMemoire(formule[i])) {
-                // On récupère les coordonnées de la cellle rencontrée
+                // On récupère les coordonnées de la cellule rencontrée
                 tmpNouvelle = this.leTableur.conversionChaineEnCoordonnees(
                         formule[i].replace("$", ""));
 
                 /*
-                 * On est succeptible de rencontrer quatre cas de figure :
+                 * On est susceptible de rencontrer quatre cas de figure :
                  *   - cellule pas bloquée du tout
                  *   - cellule bloquée uniquement sur la ligne
                  *   - cellule bloquée uniquement sur la colonne
@@ -987,7 +989,7 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
                     formule[i] = this.leTableur.conversionCoordonneesEnChaine(
                             tmpNouvelle);
 
-                    // On remet le blocage en plage
+                    // On remet le blocage en place
                     formule[i] = '$' + formule[i];
                 } // else 
                 /*
@@ -1016,19 +1018,19 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
     
     
     /**
-     * Contrôle si une chaine de caractères est une plage de cellules
+     * Contrôle si une chaîne de caractères est une plage de cellules
      * @param aTester Chaine à tester
-     * @return true si la chaine est une plage de cellules, false sinon
+     * @return true si la chaîne est une plage de cellules, false sinon
      */
     private static boolean estUnePlageDeCellules(String aTester) {
         return Pattern.compile(REGEX_PLAGE_CELLULES).matcher(aTester).matches();
     }
     
     /**
-     * Contrôle si une chaine de caractères est une cellule incluant un blocage
-     * au niveau de la colone (lettre)
-     * @param aTester Chaine à tester
-     * @return true si la chaine est une cellule bloquée sur la colone,
+     * Contrôle si une chaîne de caractères est une cellule incluant un blocage
+     * au niveau de la colonne (lettre)
+     * @param aTester Chaîne à tester
+     * @return true si la chaîne est une cellule bloquée sur la colonne,
      *         false sinon
      */
     private static boolean estUneCellulebloqueeSurLaColone(String aTester) {
@@ -1037,10 +1039,10 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
     }
     
     /**
-     * Contrôle si une chaine de caractères est une cellule incluant un blocage
+     * Contrôle si une chaîne de caractères est une cellule incluant un blocage
      * au niveau de la ligne (chiffre)
-     * @param aTester Chaine à tester
-     * @return true si la chaine est une cellule bloquée sur la ligne,
+     * @param aTester Chaîne à tester
+     * @return true si la chaîne est une cellule bloquée sur la ligne,
      *         false sinon
      */
     private static boolean estUneCellulebloqueeSurLaLigne(String aTester) {
@@ -1049,7 +1051,7 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
     }
     
     /**
-     * Controle si une plage de cellules est une ligne ou une colone
+     * Controle si une plage de cellules est une ligne ou une colonne
      * @param plageCellules Plage à tester
      * @return true s'il s'agit d'une 
      */
@@ -1059,9 +1061,9 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
     }
 
     /**
-     * Contrôle si une chaine de caractères est une plage de cellules ordonnées
-     * @param aTester Chaine à tester
-     * @return true si la chaine est une plage de cellules, false sinon
+     * Contrôle si une chaîne de caractères est une plage de cellules ordonnées
+     * @param aTester Chaîne à tester
+     * @return true si la chaîne est une plage de cellules, false sinon
      */
     public boolean estUnePlageDeCellulesOrdonnees(String aTester) {
         
@@ -1077,10 +1079,10 @@ public class ConsoleGestionTableur extends ConsoleGestionMemoire {
     }
 
     /**
-     * Convertit un tableau de chaine de caractères en chaine de caractères où
+     * Convertit un tableau de chaîne de caractères en chaîne de caractères où
      * chaque élément est séparé par un espace
      * @param formule Tableau contenant la formule
-     * @return formule en chaine de caractère
+     * @return formule en chaîne de caractère
      */
     private static String tableauEnChaine(String[] formule) {
         StringBuilder aRetourner = new StringBuilder();

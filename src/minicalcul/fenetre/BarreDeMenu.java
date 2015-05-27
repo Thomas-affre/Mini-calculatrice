@@ -115,7 +115,7 @@ public class BarreDeMenu extends JMenuBar implements ActionListener {
             + "\t$A$1 * 2 = C10\n";    
     
     /** Aide sur les différents modes de la mini-calculatrice */
-    private static final String AIDE_MODES_TABLEUR =
+    private static final String AIDE_MODES =
             "--------------- MODES DE LA CALCULATRICE --------------- \n"
             + "\tPour accéder au mode \"Gestionnaire de la mémoire\", utilisez "
             + "la commande MEM. Pour revenir au mode \"Calculatrice\", "
@@ -159,13 +159,13 @@ public class BarreDeMenu extends JMenuBar implements ActionListener {
         
         /*
          * Au démarrage, on se situe sur la calculatrice, donc on désactive les 
-         * fonctions d'enregistrement ou d'ouverture de tableur
+         * fonctions d'enregistrement ou d'ouverture du tableur
          */
         this.desactivationFonctionsTableur();
     }
 
     /**
-     * Restaure un fichier de sauvegarde de tableur sélectionnée dans une boite
+     * Restaure un fichier de sauvegarde du tableur sélectionnée dans une boîte
      * de dialogue
      */
     public void ouvirFichier() {
@@ -173,7 +173,7 @@ public class BarreDeMenu extends JMenuBar implements ActionListener {
         // Objet tampon dans lequel est placé l'objet lu dans le fichier  
         String[][] tampon = null;
         
-        // Boite de dialogue d'ouverture de fichier
+        // Boîte de dialogue d'ouverture de fichier
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileFilter(
                 new FileNameExtensionFilter("Binary Files (*.bin)", "bin"));
@@ -245,12 +245,12 @@ public class BarreDeMenu extends JMenuBar implements ActionListener {
     }
 
     /**
-     * Demande via une boite dialoque le chemin vers lequel l'utilisateur
-     * souhaite sauvegarder dans un fichier le contenu actuel du tableur
+     * Demande via une boîte de dialogue le chemin vers lequel l'utilisateur
+     * souhaite sauvegarder le contenu actuel du tableur.
      */
     private void sauvegarderFichierSous() {
         
-        // Boite de dialogue de sauvegarde
+        // Boîte de dialogue de sauvegarde
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileFilter(
                 new FileNameExtensionFilter("Binary Files (*.bin)", "bin"));
@@ -278,9 +278,9 @@ public class BarreDeMenu extends JMenuBar implements ActionListener {
     
     /**
      * Appelé lorsque le raccourci de sauvegarde est utilisé Ctrl + S.
-     * Si l'utilisateur a déjà spécifié un chemin de sauvegarde, la vers
-     * sauvegarde s'effectue sur ce fichier, sinon il est réorienté
-     * "Enregistrer sous..." sur une boite de dialogue
+     * Si l'utilisateur a déjà spécifié un chemin de sauvegarde, la sauvegarde 
+     * s'effectue sur ce fichier, sinon l'utilisateur est réorienté
+     * vers une boîte de dialogue correspondant à "Enregistrer sous..." 
      */
     public void raccourciSauvegarde() {
         if (this.fichierOuvert == null) {
@@ -332,7 +332,7 @@ public class BarreDeMenu extends JMenuBar implements ActionListener {
                 && this.fichierOuvert == null)) {
             /*
              * Si l'utilisateur souhaite choisir le chemin de sauvegarde ou
-             * s'il n'y a pas eu d'enregistrement au préalable, on réoriente
+             * s'il n'y a pas eu d'enregistrement au préalable, on le réoriente
              * vers "Enregistrer sous..."
              */
             this.sauvegarderFichierSous();
@@ -348,7 +348,7 @@ public class BarreDeMenu extends JMenuBar implements ActionListener {
             
         } else if (source == this.nouveau) {
             /*
-             * On demande confirmation si l'utilisateur souhaite ouvrir un
+             * On demande une confirmation si l'utilisateur souhaite ouvrir un
              * nouveau tableur
              */
             if (JOptionPane.showConfirmDialog(this.laFenetre, "<html><center>"
@@ -379,7 +379,7 @@ public class BarreDeMenu extends JMenuBar implements ActionListener {
         } else if (source == this.aideTableur) {
             this.laFenetre.ajoutLigneConsole(AIDE_TABLEUR);
         } else if (source == this.aideModes) {
-            this.laFenetre.ajoutLigneConsole(AIDE_MODES_TABLEUR);
+            this.laFenetre.ajoutLigneConsole(AIDE_MODES);
         }
     }
 }

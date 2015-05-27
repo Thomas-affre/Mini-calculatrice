@@ -53,6 +53,10 @@ public class ConsoleCalculSimple extends Console implements ConsoleCalcul {
             + "format : il ne doit pas y avoir d'opérations après une "
             + "affectation.";
 
+    /** Message affiché lorsqu'il y a une erreur de calcul */
+    protected static final String MSG_PROBLEME_MATHEMATIQUE = "Erreur "
+            + "mathématique : calcul impossible.";
+
     /** Liste des éléments disponible (en chaine) utilisé pour les messages */
     protected static final String[] ELEMENTS_EN_CHAINE =
         {"un réel", "un opérateur", "une parenthèse ouvrante",
@@ -222,6 +226,17 @@ public class ConsoleCalculSimple extends Console implements ConsoleCalcul {
 
         // On arrondit le résultat
         this.arrondissementResultat();
+        
+        try {
+            // On vérifie les erreurs mathématiques (division par 0)
+            Double.isInfinite(Double.parseDouble(this.instructions[0]));
+
+        } catch (NumberFormatException e) {
+            // Conversion impossible
+            this.lieuMauvaisArgument = this.instructions.length - 1;
+            this.rechercheErreur(ERREUR_MATHEMATIQUE);
+            return;  // On ne fait pas d'affectations
+        }
 
         /*
          * Si l'on doit faire une affectation, on la fait en mettant à jour
@@ -305,6 +320,10 @@ public class ConsoleCalculSimple extends Console implements ConsoleCalcul {
         case ERREUR_OPERATION_APRES_EGAL :
             this.aRetourner = tmpARetourner.append(
                     MSG_OPERATION_APRES_EGAL).toString();
+            break;
+        case ERREUR_MATHEMATIQUE : 
+            this.aRetourner = tmpARetourner.append(
+                    MSG_PROBLEME_MATHEMATIQUE).toString();
             break;
         }
     }
@@ -829,8 +848,8 @@ public class ConsoleCalculSimple extends Console implements ConsoleCalcul {
     public void arrondissementResultat() {
         // On teste si le résultat est un entier pour éviter la virgule
         if (estUnEntier(this.instructions[0])) {
-            this.instructions[0] = Integer.toString(
-                    (int) Double.parseDouble(this.instructions[0]));
+            this.instructions[0] = Long.toString(
+                    (long) Double.parseDouble(this.instructions[0]));
         } else {
             /*
              * Comme il s'agit d'un réel, on tente d'arrondir à 2 chiffres

@@ -66,7 +66,7 @@ public class FenetrePrincipale extends JFrame {
         this.setLocationRelativeTo(null);       // Centrer à l'ouverture
         this.setVisible(true);                  // Affichage de la fenêtre
         
-        // Message de confirmation lorsque l'utilisateur ferme la fenetre
+        // Message de confirmation lorsque l'utilisateur ferme la fenêtre
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 fermetureApplication();
@@ -122,9 +122,9 @@ public class FenetrePrincipale extends JFrame {
     }
     
     /**
-     * Construit la console qui affichera un historique des opérations effectués
-     * avec l'incidence qu'elles auront eu sur l'application (ex : résultat
-     * opération, affectation, erreur...)
+     * Construit la console qui affichera un historique des opérations 
+     * effectuées avec l'incidence qu'elles auront eu sur l'application 
+     * (ex : résultat opération, affectation, erreur...)
      */
     private void creationConsole() {
         
@@ -141,7 +141,7 @@ public class FenetrePrincipale extends JFrame {
         this.retourConsole.setForeground(Color.GREEN);   // Couleur police
         this.retourConsole.setFont(new Font("Courier", 0, 12)); // Police
 
-        this.retourConsole.setLineWrap(true); // Empeche le scroll horizontal...
+        this.retourConsole.setLineWrap(true); // Empêche le scroll horizontal...
         this.retourConsole.setWrapStyleWord(true); // ...sans découper les mots
         
         // Premier texte affiché à l'ouverture de la calculatrice
@@ -182,7 +182,7 @@ public class FenetrePrincipale extends JFrame {
     }
     
     /**
-     * Acceseur à lesOnglets
+     * Accesseur à lesOnglets
      * @return lesOnglets 
      */
     public JTabbedPane getLesOnglets() {
@@ -206,7 +206,7 @@ public class FenetrePrincipale extends JFrame {
     }
 
     /**
-     * Acceseur à laMemoire
+     * Accesseur à laMemoire
      * @return laMemoire 
      */
     public PanneauZones getLaMemoire() {
@@ -214,7 +214,7 @@ public class FenetrePrincipale extends JFrame {
     }
 
     /**
-     * Acceseur à leTableur
+     * Accesseur à leTableur
      * @return leTableur 
      */
     public PanneauTableur getLeTableur() {
@@ -222,7 +222,7 @@ public class FenetrePrincipale extends JFrame {
     }
 
     /**
-     * Acceseur à leMenu
+     * Accesseur à leMenu
      * @return leMenu 
      */
     public BarreDeMenu getLeMenu() {

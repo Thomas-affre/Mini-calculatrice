@@ -6,8 +6,11 @@ package minicalcul.programme.tableur;
 
 /**
  * Objet matérialisant une cellule d'un tableur
+ * @author Thomas Affre
+ * @author Thibaut Méjane
+ * @author Florian Louargant
  * @author Clément Zeghmati
- * @version 0.1
+ * @version 1.1
  */
 public class Cellule {
     
@@ -27,7 +30,7 @@ public class Cellule {
     private boolean formule;
 
     /**
-     * Construit la cellule avec ses corrdonnées
+     * Construit la cellule avec ses coordonnées
      * @param coordonnees Coordonnées de la cellule
      * @param sonTableur Référence au tableur à laquelle est ratachée
      *                           cette cellule
@@ -38,11 +41,11 @@ public class Cellule {
     }
     
     /**
-     * Construit une cellule à partir des informations contenus dans un fichier
+     * Construit une cellule à partir des informations contenues dans un fichier
      * binaire de sauvegarde
      * @param coordonnees Coordonnées de la cellule
      * @param contenu Contenu brut de la cellule
-     * @param formule Formule contenu de la cellule ou null
+     * @param formule Formule contenue dans la cellule ou null
      * @param sonTableur Référence au tableur à laquelle est ratachée
      *                           cette cellule
      */
@@ -62,7 +65,7 @@ public class Cellule {
 
     /**
      * Sauvegarde l'état de la cellule dans un tableau correspondant à :
-     *          0 : coordonnée en chaine
+     *          0 : coordonnées sous forme de chaine
      *          1 : contenu brut de la cellule
      *          2 : formule. null s'il n'y en a pas
      * @return tableau de l'état de la cellule
@@ -78,7 +81,7 @@ public class Cellule {
     }
 
     /**
-     * Acceseur à contenu
+     * Accesseur à contenu
      * @return contenu 
      */
     public String getContenu() {
@@ -95,7 +98,7 @@ public class Cellule {
     }
 
     /**
-     * Acceseur à formule
+     * Accesseur à formule
      * @return formule 
      */
     public boolean isFormule() {
@@ -111,7 +114,7 @@ public class Cellule {
     }
 
     /**
-     * Acceseur à coordonnees
+     * Accesseur à coordonnées
      * @return coordonnees 
      */
     public String getCoordonnees() {

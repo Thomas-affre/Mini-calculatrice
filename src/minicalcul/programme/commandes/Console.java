@@ -99,36 +99,39 @@ public abstract class Console {
     
     /** Erreur déclenchée s'il y a une opération après un égal */
     public static final int ERREUR_OPERATION_APRES_EGAL = 9;
+    
+    /** Erreur déclenchée s'il y a un calcul impossible */
+    public static final int ERREUR_MATHEMATIQUE = 10;
 
     /** 
      * Erreur déclenchée si le nombre d'arguments d'une commande du gestionnaire
      * de mémoires ou du tableur n'est pas celui attendu
      */
-    public static final int ERREUR_NB_ARGUMENT = 10;
+    public static final int ERREUR_NB_ARGUMENT = 11;
     
     /** Erreur déclenchée si une plage mémoire est mauvaise */
-    public static final int ERREUR_PLAGE_MEMOIRE = 11;
+    public static final int ERREUR_PLAGE_MEMOIRE = 12;
     
     /** Erreur déclenchée si une plage de mémoire n'est pas ordonnée */
-    public static final int ERREUR_ORDRE_PLAGE_MEMOIRE = 12;
+    public static final int ERREUR_ORDRE_PLAGE_MEMOIRE = 13;
     
     /** Erreur déclenchée si un argument doit être un réel mais ne l'est pas */
-    public static final int ERREUR_VALEUR_ARGUMENT = 13;
+    public static final int ERREUR_VALEUR_ARGUMENT = 14;
     
     /** Erreur déclenchée s'il manque une valeur dans une commande */
-    public static final int ERREUR_VALEUR_ABSENTE = 14;
+    public static final int ERREUR_VALEUR_ABSENTE = 15;
     
     /** Erreur déclenchée s'il y a un problème de dimension lors d'une copie */
-    public static final int ERREUR_DIMENSION_COPIE = 15;
+    public static final int ERREUR_DIMENSION_COPIE = 16;
     
     /** Erreur déclenchée si une mémoire est attendue dans une commande */
-    public static final int ERREUR_MEMOIRE_ABSENTE = 16;
+    public static final int ERREUR_MEMOIRE_ABSENTE = 17;
     
     /** Erreur déclenchée si aucune affectation n'est attendue */
-    public static final int ERREUR_AFFECTATION_INNATENDUE = 17;
+    public static final int ERREUR_AFFECTATION_INNATENDUE = 18;
     
     /** Erreur déclenchée si on attend une ligne ou une colonne en plage */
-    public static final int ERREUR_PLAGE_LIGNE_OU_COLONNE = 18;
+    public static final int ERREUR_PLAGE_LIGNE_OU_COLONNE = 19;
         
     /** Référence permettant d'accéder aux éléments de la console */
     private FenetrePrincipale laFenetre;
